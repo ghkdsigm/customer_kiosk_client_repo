@@ -1,6 +1,6 @@
 <template>
   <div>
-    asdfasdf
+    footer
   </div>
 </template>
 

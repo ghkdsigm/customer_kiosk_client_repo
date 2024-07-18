@@ -5,30 +5,21 @@ module.exports = {
     theme: {
       extend: {
         colors: {
-          //primary: '#1DA1F2',
-          primary: '#ffb300',
-          primaryHover: '#ffcb51',
+          primary: '#1F2733',
+          primaryHover: '#434A66',
           secondary: '#fff',
+          secondaryHover: '#eee',
           third: '#11216b',
           thirdHover: '#182f96',
           fourth: '#cfcfcf4a',
+          fourthHover: '#cfcfcf4a',
           fifth: '#42b883',
           fifthHover: '#42d392',
+          sixth: '#fff',
+          sixthHover: '#ccc',
           dark: '#1a91da',
           light: '#a5d0f5',
-          lighter: '#D4E5F4',
-          bgWhite: '#e1e1e1',
-          tranparent: 'transparent',
-          basicBg: '#1b1d20',
-          innerBg: '#1111114a',
-          innerBgWhite: '#dadada4a',
-  
-          'primary-dark': '#0D2438',
-          'secondary-dark': '#000',
-          'third-dark': '#ffb300',
-          'fourth-dark': '#0e0e0e4a',
-          'ternary-dark': '#1E3851',
-          bgDark: '#35353C',
+          tranparent: 'transparent',      
         },
         container: {
           // screen: {
