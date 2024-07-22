@@ -1,25 +1,25 @@
 <template>
-    <div>
-      <h1 class="tit">{{ titleEN }}</h1>
-    </div>
-  </template>
-  
-  <script>
-  import { defineComponent } from 'vue';
-  import { useTitleEN } from '@/composables/useTitleEN';
+  <div>
+    <h1 class="tit">{{ titleEN }}</h1>
+  </div>
+</template>
 
-  export default defineComponent({
-  name: 'PageNews',
-  setup() {
-      const { titleEN } = useTitleEN();
+<script>
+import { defineComponent } from 'vue';
+import { useTitleEN } from '@/composables/useTitleEN';
 
-      return {
-        titleEN
-      };
-    }
-  });
-  </script>
-  
-  <style>
-  
-  </style>
+export default defineComponent({
+name: 'PageNews',
+setup() {
+    const { titleEN } = useTitleEN();
+
+    return {
+      titleEN
+    };
+  }
+});
+</script>
+
+<style>
+
+</style>
