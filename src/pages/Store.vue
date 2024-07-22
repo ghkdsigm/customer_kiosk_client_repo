@@ -9,7 +9,7 @@ import { defineComponent } from 'vue';
 import { useTitleEN } from '@/composables/useTitleEN';
 
 export default defineComponent({
-name: 'Store',
+name: 'PageStore',
 setup() {
     const { titleEN } = useTitleEN();
 

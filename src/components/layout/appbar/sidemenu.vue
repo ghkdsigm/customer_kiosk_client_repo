@@ -28,9 +28,10 @@
 <script>
 import { defineComponent, computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router';
+import { useMparkStore } from '@/store/mpark'
 
 export default defineComponent({
-    name: 'LayoutAppbarSidemenu',
+    name: 'CommonLayoutAppbarSidemenu',
     props: {
         sideItems: {
             type: Array,
@@ -45,7 +46,10 @@ export default defineComponent({
         const selectedIndex = ref(null);
         const selectedSecondIndex = ref(null);
         const menuSelected = ref(false)
-        
+        const newTitle = ref('')
+        const mparkStore = useMparkStore()
+
+
         const selectMenu = (idx) => {
             if (idx !== undefined && idx !== null) {
                 selectedIndex.value = idx;
@@ -57,15 +61,18 @@ export default defineComponent({
         const selectSecondMenu = (idx) => {
             if (idx !== undefined && idx !== null) {
                 selectedSecondIndex.value = idx;
+                newTitle.value = selectedMenu.value.subMenu[selectedSecondIndex.value].title
+                updateFloorTitle(newTitle.value)
             }
         }
 
         watch(selectedMenu, (newVal) => {
             if (newVal !== null) {
-                menuSelected.value = true;
+                menuSelected.value = true;                
                 emit('menu-selected', menuSelected.value);
             }
         });
+
         
         const getImageSrc = (img) => {
             const fileName = `/src/assets/img/side/${img}.png`;
@@ -75,6 +82,11 @@ export default defineComponent({
         const moveToIntro = () => {
             router.push({ name: 'intro' });
         }
+
+        const updateFloorTitle = (val) => {
+            mparkStore.setFloorTitle(val)
+        }
+
 
         
         return {
@@ -86,7 +98,9 @@ export default defineComponent({
             selectedSecondIndex,
             selectSecondMenu,
             selectMenu,
-            moveToIntro
+            moveToIntro,
+            updateFloorTitle,
+            newTitle
         }
     }
 })

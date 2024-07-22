@@ -14,7 +14,7 @@ import { defineComponent, toRefs } from 'vue'
 import { useRouter } from 'vue-router';
 
 export default defineComponent({
-    name: 'LayoutAppbarBottommenu',
+    name: 'CommonLayoutAppbarBottommenu',
     props: {
         bottomItems: {
             type: Array,

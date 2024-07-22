@@ -1,20 +1,24 @@
 <template>
   <div>
-    <h1 class="mainTit">{{ titleEN }}</h1>
+    <h1 class="mainTit">{{ floorTitle }}</h1>
   </div>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import { defineComponent, computed } from 'vue';
 import { useTitleEN } from '@/composables/useTitleEN';
+import { useMparkStore } from '@/store/mpark'
 
 export default defineComponent({
-name: 'Mpark',
+name: 'PageMpark',
 setup() {
     const { titleEN } = useTitleEN();
+    const mparkStore = useMparkStore()
+    const floorTitle = computed(() => mparkStore.floorTitle)
 
     return {
-      titleEN
+      titleEN,
+      floorTitle
     };
   }
 });

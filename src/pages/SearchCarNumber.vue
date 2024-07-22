@@ -9,7 +9,7 @@ import { defineComponent } from 'vue';
 import { useTitleEN } from '@/composables/useTitleEN';
 
 export default defineComponent({
-name: 'SearchCarNumber',
+name: 'PageSearchCarNumber',
 setup() {
     const { titleEN } = useTitleEN();
 

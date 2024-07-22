@@ -9,7 +9,7 @@
   import { useTitleEN } from '@/composables/useTitleEN';
 
   export default defineComponent({
-  name: 'News',
+  name: 'PageNews',
   setup() {
       const { titleEN } = useTitleEN();
 
