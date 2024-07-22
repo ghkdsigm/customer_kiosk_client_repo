@@ -54,7 +54,11 @@ export default defineComponent({
             if (idx !== undefined && idx !== null) {
                 selectedIndex.value = idx;
                 selectedMenu.value = props.sideItems[idx];
+                selectedSecondIndex.value = 0
+                newTitle.value = selectedMenu.value.subMenu[0].title
+                updateFloorTitle(newTitle.value)
             }
+            
             console.log('idx', selectedMenu.value);
         }
 
