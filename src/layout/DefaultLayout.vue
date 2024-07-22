@@ -1,61 +1,77 @@
 <template>
-  <div class="w-full h-full absolute">
+  <div class="w-full h-full absolute overflow-hidden">
     <!--Main Section-->
     <div class="relative screenArea">      
-        <div class="mx-auto h-full">
+        <div class="mx-auto h-full" :class="currentPath !== '/' ? '2xl:p-22 p-12' : ''">
             <router-view v-slot="{ Component }">
               <component :is="Component"></component>
             </router-view>
         </div>            
     </div>
+    <!--//Main Section-->
+
     <!--Bottom Menu-->
     <BottomMenu :bottomItems="bottomItems" />   
+    <!--//Bottom Menu-->
   </div>
 </template>
 
 <script>
-import { ref, onBeforeMount, onMounted } from 'vue'
-//import router from '../router'
-import SideMenu from '../components/layout/appbar/sidemenu.vue'
-import BottomMenu from '../components/layout/appbar/bottommenu.vue'
+import { ref, onBeforeMount, onMounted, computed } from 'vue'
+import router from '../router'
+import BottomMenu from '@/components/layout/appbar/bottommenu.vue'
+import { useRoute } from 'vue-router';
 
 export default {    
   components: {
-    BottomMenu,
-    SideMenu
+    BottomMenu
   },
   setup(){
-    //const routes = ref([])  
-    const bottomItems = ref([
+    const currentRoutes = useRoute()
+    const currentPath = computed(() => currentRoutes.path);
+    const routes = ref([])  
+    //Bottom전용
+    const bottomItems = ref([ 
       {
-        icon: "require('@/assets/img/bottom/ico_building.svg)",
+        ico: 'ico_building',
         title: '엠파크안내',
+        titleEN: '',
+        to: '/mpark',
         state: true
       },
       {
-        icon: "require('@/assets/img/bottom/ico_location.svg)",
+        ico: 'ico_location',
         title: '매장안내',
+        titleEN: 'STORE SEARCH',
+        to: '/store',
         state: true
       },
       {
-        icon: "require('@/assets/img/bottom/ico_car.svg)",
+        ico: 'ico_car',
         title: '구입차량검색',
+        titleEN: 'CAR SEARCH ',
+        to: '/searchcar',
         ustatesed: true
       },
       {
-        icon: "require('@/assets/img/bottom/ico_person.svg)",
+        ico: 'ico_person',
         title: '종사원조회',
+        titleEN: 'DEALER SEARCH',
+        to: '/employee',
         state: true
       },
       {
-        icon: "require('@/assets/img/bottom/ico_newspaper.svg)",
+        ico: 'ico_newspaper',
         title: '한국일보',
+        titleEN: 'NEWS ',
+        to: '/news',
         state: true
       },
     ])
 
     onBeforeMount(()=>{
-     // routes.value = router.options.routes.filter((route) => route.meta.isMenu == true)
+      //routes.value = router.options.routes
+      routes.value = router.options.routes.filter((route) => route.meta.isMenu == true)
     });
 
     onMounted(() => {
@@ -69,10 +85,11 @@ export default {
     // onUnmounted(() => {
     // })
 
-
     return {
-      //router,   
-      bottomItems    
+      routes,
+      router,   
+      bottomItems,
+      currentPath    
     }
   },    
 }
@@ -82,20 +99,4 @@ export default {
   .screenArea {
     height:calc(100% - 8rem)
   }
-
-  /*컴포넌트 이동 트랜지션*/
-  .route-enter-from {
-    opacity: 0;
-    transform: translateX(100px);
-  }
-  .route-enter-active{
-    transition: all 0.1s ease-out;
-  }
-  .route-leave-to {
-    opacity: 0;
-    transform: translateX(-100px);
-  }
-  .route-leave-active{
-    transition: all 0.1s ease-in;
-  }
-  </style>../components/layout/home/intro.vue
+</style>

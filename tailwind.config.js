@@ -4,6 +4,9 @@ module.exports = {
     darkMode: 'class', // Tailwindcss 3.0 default is 'media',  'class'
     theme: {
       extend: {
+        fontFamily: {
+          sans: ['Pretendard', 'ui-sans-serif', 'system-ui'],
+        },
         colors: {
           primary: '#1F2733',
           primaryHover: '#434A66',
@@ -17,14 +20,13 @@ module.exports = {
           fifthHover: '#42d392',
           sixth: '#fff',
           sixthHover: '#ccc',
+          buttonHover: '0C7E60',
           dark: '#1a91da',
           light: '#a5d0f5',
+          pale: '#777777',
           tranparent: 'transparent',      
         },
         container: {
-          // screen: {
-          //   '3xl': { max: '1800px' },
-          // },
           padding: {
             DEFAULT: '1rem',
             sm: '2rem',
@@ -57,32 +59,48 @@ module.exports = {
           },
         },
       },
+      screens: {
+        '2xl': {'max': '1535px'},
+        // => @media (max-width: 1535px) { ... }
+  
+        'xl': {'max': '1279px'},
+        // => @media (max-width: 1279px) { ... }
+  
+        'lg': {'max': '1023px'},
+        // => @media (max-width: 1023px) { ... }
+  
+        'md': {'max': '767px'},
+        // => @media (max-width: 767px) { ... }
+  
+        'sm': {'max': '639px'},
+        // => @media (max-width: 639px) { ... }
+      },
     },
     corePlugins: {
       container: false,
     },
     plugins: [
       function ({ addComponents }) {
-        addComponents({
-          '.container': {
-            maxWidth: '100%',
-            '@screen sm': {
-              maxWidth: '640px',
-            },
-            '@screen md': {
-              maxWidth: '768px',
-            },
-            '@screen lg': {
-              maxWidth: '1280px',
-            },
-            '@screen xl': {
-              maxWidth: '1600px',
-            },
-            '@screen 2xl': {
-              maxWidth: '2900px',
-            },
-          },
-        });
+        // addComponents({
+        //   '.container': {
+        //     maxWidth: '100%',
+        //     '@screen sm': {
+        //       maxWidth: '640px',
+        //     },
+        //     '@screen md': {
+        //       maxWidth: '768px',
+        //     },
+        //     '@screen lg': {
+        //       maxWidth: '1280px',
+        //     },
+        //     '@screen xl': {
+        //       maxWidth: '1600px',
+        //     },
+        //     '@screen 2xl': {
+        //       maxWidth: '2900px',
+        //     },
+        //   },
+        // });
       },
     ],
   };

@@ -11,4 +11,8 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  compilerOptions: {
+    isCustomElement: (tag) => tag.startsWith('custom-') // 맞춤형 요소 설정
+  }
+
 })

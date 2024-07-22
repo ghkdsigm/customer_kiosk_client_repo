@@ -10,10 +10,11 @@
 
 <script>
 export default {
+  name: 'LayoutHomeIntro',
 
 }
 </script>
 
-<style>
+<style scoped>
 
 </style>

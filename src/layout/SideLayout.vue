@@ -1,75 +1,210 @@
 <template>
-  <div class="">     
-    <!--Side Menu-->
-    <div class="">
-        <SideMenu />   
-    </div>
+  <div class="w-full h-full absolute overflow-hidden">
     <!--Main Section-->
-    <div class="relative py-6 sm:py-10">      
-        <div class="container mx-auto">
+    <div class="relative screenArea"  :class="{ 'secondMenu': checkSide === true }">      
+        <div class="mx-auto h-full 2xl:p-22 p-12">
             <router-view v-slot="{ Component }">
               <component :is="Component"></component>
             </router-view>
         </div>            
     </div>
+    <!--//Main Section-->
+
+    <!--Side Menu-->
+    <SideMenu :sideItems="sideItems" @menu-selected="handleMenuSelected"/>   
+    <!--//Side Menu-->
+    
     <!--Bottom Menu-->
-    <div class="">
-        <BottomMenu />   
-    </div>
+    <BottomMenu :bottomItems="bottomItems" />   
+    <!--//Bottom Menu-->
   </div>
 </template>
 
 <script>
-import { ref, onBeforeMount, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 //import router from '../router'
-import SideMenu from '../components/layout/appbar/sidemenu.vue'
-import BottomMenu from '../components/layout/appbar/bottommenu.vue'
+import BottomMenu from '@/components/layout/appbar/bottommenu.vue'
+import SideMenu from '@/components/layout/appbar/sidemenu.vue'
 
 export default {    
-  components: {
+  components: {   
     BottomMenu,
-    SideMenu
+    SideMenu,
   },
-  // setup(){
-  //   //const routes = ref([])  
+  setup(){
+    //const routes = ref([])  
+    //Bottom전용
+    const bottomItems = ref([
+      {
+        ico: 'ico_building',
+        title: '엠파크안내',
+        to: '/mpark',
+        state: true
+      },
+      {
+        ico: 'ico_location',
+        title: '매장안내',
+        to: '/store',
+        state: true
+      },
+      {
+        ico: 'ico_car',
+        title: '구입차량검색',
+        to: '/searchcar',
+        ustatesed: true
+      },
+      {
+        ico: 'ico_person',
+        title: '종사원조회',
+        to: '/employee',
+        state: true
+      },
+      {
+        ico: 'ico_newspaper',
+        title: '한국일보',
+        to: '/news',
+        state: true
+      },
+    ])
 
-  //   onBeforeMount(()=>{
-  //    // routes.value = router.options.routes.filter((route) => route.meta.isMenu == true)
-  //   });
+    //Side전용
+    const sideItems = ref([
+      {
+        img: 'hub',
+        title: '허브 안내',
+        subtit: 'HUB',
+        to: '',
+        subMenu: [
+          {
+            title: '1F', 
+            to: '',
+          },
+          {
+            title: '2F', 
+            to: '',
+          },
+          {
+            title: '3F', 
+            to: '',
+          },
+          {
+            title: '4F', 
+            to: '',
+          },
+          {
+            title: '5F', 
+            to: '',
+          },
+          {
+            title: '6F', 
+            to: '',
+          },
+          {
+            title: '7F', 
+            to: '',
+          },
+          {
+            title: '8F', 
+            to: '',
+          },
+          {
+            title: '9F', 
+            to: '',
+          },
+        ],
+        color: '#0C7E60',
+        state: true
+      },
+      {
+        img: 'tower',
+        title: '타워 안내',
+        subtit: 'TOWER',        
+        to: '',
+        subMenu: [
+          {
+            title: '1F', 
+            to: '',
+          },
+          {
+            title: '2F', 
+            to: '',
+          },
+          {
+            title: '단치전체', 
+            to: '',
+          },
+        ],
+        color: '#ffffff',
+        state: true
+      },
+      {
+        img: 'land',
+        title: '랜드 안내',
+        subtit: 'LAND',        
+        to: '',
+        subMenu: [
+          {
+            title: '1F', 
+            to: '',
+          },
+          {
+            title: '2F', 
+            to: '',
+          },
+          {
+            title: '3F', 
+            to: '',
+          },
+        ],
+        color: '#ffffff',
+        state: true
+      },
+    ])
 
-  //   onMounted(() => {
-  //   })
-  //   // onBeforeUpdate(() => {
-  //   // })
-  //   // onUpdated(() => {
-  //   // })
-  //   // onBeforeUnmount(() => {
-  //   // })
-  //   // onUnmounted(() => {
-  //   // })
+    const checkSide = ref(false)
+    // onBeforeMount(()=>{
+    //   routes.value = router.options.routes.filter((route) => route.meta.isMenu == true)
+    // });
 
+    const handleMenuSelected = (menuSelected) => {
+      console.log('Menu selected:', menuSelected);
+      if(menuSelected){
+        checkSide.value = true
+      } else {
+        checkSide.value = false
+      }
+      // Do something when menu is selected
+    };
 
-  //   return {
-  //     //router,       
-  //   }
-  // },    
+    onMounted(() => {
+    })
+    // onBeforeUpdate(() => {
+    // })
+    // onUpdated(() => {
+    // })
+    // onBeforeUnmount(() => {
+    // })
+    // onUnmounted(() => {
+    // })
+
+    return {
+      // routes,
+      // router,  
+      bottomItems,
+      sideItems,
+      handleMenuSelected,
+      checkSide    
+    }
+  },    
 }
 </script>
 
 <style scoped>
-  /*컴포넌트 이동 트랜지션*/
-  .route-enter-from {
-    opacity: 0;
-    transform: translateX(100px);
+  .screenArea { 
+    height:calc(100% - 8rem);
+    width: calc(100% - 11rem);
+  }  
+  .screenArea.secondMenu {
+    width: calc(100% - 305px) !important;
   }
-  .route-enter-active{
-    transition: all 0.1s ease-out;
-  }
-  .route-leave-to {
-    opacity: 0;
-    transform: translateX(-100px);
-  }
-  .route-leave-active{
-    transition: all 0.1s ease-in;
-  }
-  </style>../components/layout/home/intro.vue
+  </style>
