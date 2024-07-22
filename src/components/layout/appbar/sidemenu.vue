@@ -11,7 +11,7 @@
         </div>
         <div aria-label="Sidebar" class="firstTab lg:block flex-shrink-0 overflow-y-auto w-44">
             <p class="w-full h-[120px] flex bg-white">
-                <img src="@/assets/img/side_logo.svg" alt="mpark" class="w-fit m-auto" @click="moveToIntro">
+                <img src="@/assets/img/side_logo.svg" alt="mpark" class="w-fit m-auto hover:cursor-pointer" @click="moveToIntro">
             </p>
             <div class="sideMenutItem relative w-full grid grid-rows-3 h-full bg-[#F8F8F8]">
                 <div class="itemWrap flex justify-center items-center text-gray-400 hover:text-red-700 flex-col hover:bg-[#169171] hover:text-white text-gray-900 h-full hover:cursor-pointer" v-for="(item, idx) in sideItems" :class="{ 'bg-[#0C7E60] text-white': selectedIndex === idx }" :key="idx" @click="selectMenu(idx)">
