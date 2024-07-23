@@ -1,7 +1,7 @@
 <template>
   <div class="w-full h-full absolute overflow-hidden">
     <!--Main Section-->
-    <div class="relative screenArea"  :class="{ 'secondMenu': checkSide === true }">      
+    <div class="relative screenArea"  :class="[{ 'secondMenu': checkSide === true && currentPath !== '/searchcar' && currentPath !== '/searchcarnumber'},{ 'bg-[#EBEFF2]' : currentPath === '/searchcar' || currentPath === '/searchcarnumber'}]">      
         <div class="mx-auto h-full 2xl:p-22 p-12">
             <router-view v-slot="{ Component }">
               <component :is="Component"></component>
@@ -21,10 +21,11 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 //import router from '../router'
 import BottomMenu from '@/components/layout/appbar/bottommenu.vue'
 import SideMenu from '@/components/layout/appbar/sidemenu.vue'
+import { useRoute } from 'vue-router';
 
 export default {    
   components: {   
@@ -32,6 +33,8 @@ export default {
     SideMenu,
   },
   setup(){
+    const currentRoutes = useRoute()
+    const currentPath = computed(() => currentRoutes.path);
     //const routes = ref([])  
     //Bottom전용
     const bottomItems = ref([
@@ -193,7 +196,8 @@ export default {
       bottomItems,
       sideItems,
       handleMenuSelected,
-      checkSide    
+      checkSide,
+      currentPath  
     }
   },    
 }
