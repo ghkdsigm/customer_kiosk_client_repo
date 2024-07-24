@@ -9,66 +9,32 @@
         </div>            
     </div>
     <!--//Main Section-->
-
     <!--Side Menu-->
     <SideMenu :sideItems="sideItems" @menu-selected="handleMenuSelected"/>   
     <!--//Side Menu-->
-    
-    <!--Bottom Menu-->
-    <BottomMenu :bottomItems="bottomItems" />   
-    <!--//Bottom Menu-->
   </div>
 </template>
 
 <script>
 import { ref, onMounted, computed } from 'vue'
 //import router from '../router'
-import BottomMenu from '@/components/layout/appbar/bottommenu.vue'
 import SideMenu from '@/components/layout/appbar/sidemenu.vue'
 import { useRoute } from 'vue-router';
 
 export default {    
   components: {   
-    BottomMenu,
     SideMenu,
+  },
+  props:{
+    // bottomItems: {
+    //   type:Array,
+    //   default:(()=>[])
+    // }
   },
   setup(){
     const currentRoutes = useRoute()
     const currentPath = computed(() => currentRoutes.path);
-    //const routes = ref([])  
-    //Bottom전용
-    const bottomItems = ref([
-      {
-        ico: 'ico_building',
-        title: '엠파크안내',
-        to: '/mpark',
-        state: true
-      },
-      {
-        ico: 'ico_location',
-        title: '매장안내',
-        to: '/store',
-        state: true
-      },
-      {
-        ico: 'ico_car',
-        title: '구입차량검색',
-        to: '/searchcar',
-        ustatesed: true
-      },
-      {
-        ico: 'ico_person',
-        title: '종사원조회',
-        to: '/employee',
-        state: true
-      },
-      {
-        ico: 'ico_newspaper',
-        title: '한국일보',
-        to: '/news',
-        state: true
-      },
-    ])
+    //const routes = ref([])      
 
     //Side전용
     const sideItems = ref([
@@ -193,7 +159,6 @@ export default {
     return {
       // routes,
       // router,  
-      bottomItems,
       sideItems,
       handleMenuSelected,
       checkSide,
