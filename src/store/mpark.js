@@ -12,7 +12,6 @@ export const useMparkStore = defineStore('counter', {
     },
     setFloorTitle(newTitle) {
         this.floorTitle = newTitle
-    }
-  
+    }  
   }
 })

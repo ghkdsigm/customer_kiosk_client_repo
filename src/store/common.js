@@ -12,7 +12,6 @@ export const useCommonStore = defineStore('counter', {
     },
     setOpenPopup(val) {
         this.openPopup = val
-    }
-  
+    }  
   }
 })

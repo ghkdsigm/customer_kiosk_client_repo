@@ -13,7 +13,7 @@ import HomeNews from '@/components/home/news/index.vue'
 export default defineComponent({
 name: 'PageNews',
 components: {
-  HomeNews,
+    HomeNews,
 },
 setup() {
     const { titleEN } = useTitleEN();

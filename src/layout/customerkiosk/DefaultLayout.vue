@@ -2,7 +2,7 @@
   <div class="w-full h-full absolute overflow-hidden">
     <!--Main Section-->
     <div class="relative screenArea">      
-        <div class="mx-auto h-full" :class="currentPath !== '/' ? '2xl:p-22 p-12' : ''">
+        <div class="mx-auto h-full" :class="currentPath !== '/customerkiosk' ? '2xl:p-22 p-12' : ''">
             <router-view v-slot="{ Component }">
               <component :is="Component"></component>
             </router-view>
@@ -14,7 +14,7 @@
 
 <script>
 import { ref, onBeforeMount, onMounted, computed } from 'vue'
-import router from '../router'
+import router from '@/router'
 import { useRoute } from 'vue-router';
 
 export default {    

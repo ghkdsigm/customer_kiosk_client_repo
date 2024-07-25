@@ -1,7 +1,7 @@
 <template>
   <div class="w-full h-full absolute overflow-hidden">
     <!--Main Section-->
-    <div class="relative screenArea"  :class="[{ 'secondMenu': checkSide === true && currentPath !== '/searchcar' && currentPath !== '/searchcarnumber'},{ 'bg-[#EBEFF2]' : currentPath === '/searchcar' || currentPath === '/searchcarnumber'}]">      
+    <div class="relative screenArea"  :class="[{ 'secondMenu': checkSide === true && currentPath !== '/customerkiosk/searchcar' && currentPath !== '/customerkiosk/searchcarnumber'},{ 'bg-[#EBEFF2]' : currentPath === '/customerkiosk/searchcar' || currentPath === '/customerkiosk/searchcarnumber'}]">      
         <div class="mx-auto h-full 2xl:p-22 p-12">
             <router-view v-slot="{ Component }">
               <component :is="Component"></component>
