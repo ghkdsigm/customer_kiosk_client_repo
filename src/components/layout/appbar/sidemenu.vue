@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="min-h-0 flex-1 flex overflow-hidden sideArea" v-if="currentPath !== '/searchcar' && currentPath !== '/searchcarnumber'">
+        <div class="min-h-0 flex-1 flex overflow-hidden sideArea" v-if="currentPath !== '/customerkiosk/searchcar' && currentPath !== '/customerkiosk/searchcarnumber'">
             <!-- 2Depth -->
             <div class="secondTab flex-shrink-0 overflow-y-auto w-32" v-if="checkSubMenu && selectedMenu !== null">
                 <ul>
@@ -50,7 +50,7 @@
 import { defineComponent, computed, ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router';
 import { useMparkStore } from '@/store/mpark'
-import { useUtilities } from '@/hooks/useUtilities';
+import { useUtilities } from '@/utils/useUtilities';
 
 export default defineComponent({
     name: 'CommonLayoutAppbarSidemenu',
@@ -64,7 +64,6 @@ export default defineComponent({
         const currentRoutes = useRoute()
         const currentPath = computed(() => currentRoutes.path);
         const router = useRouter();
-        const images = import.meta.glob('@/assets/img/side/*.png', { eager: true });
         const checkSubMenu = computed(() => props.sideItems.find(v=>v.subMenu.length !== 0))
         const selectedMenu = ref(null)
         const selectedIndex = ref(null);
@@ -128,13 +127,8 @@ export default defineComponent({
                 menuSelected.value = true;                
                 emit('menu-selected', menuSelected.value);
             }
-        });
-
-        
-        const getImageSrc = (img) => {
-            const fileName = `/src/assets/img/side/${img}.png`;
-            return images[fileName]?.default || images[fileName];
-        }
+        });        
+       
 
         const moveToIntro = () => {
             router.push({ name: 'intro' });
@@ -150,7 +144,6 @@ export default defineComponent({
             currentRoutes,
             currentPath,
             router,
-            getImageSrc,
             checkSubMenu,
             selectedMenu,
             selectedIndex,

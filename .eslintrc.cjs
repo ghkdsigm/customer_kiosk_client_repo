@@ -16,7 +16,9 @@ module.exports = {
 		},
 	},
 	// 추가적인 규칙들을 적용
-	extends: ['eslint:recommended', 'plugin:vue/recommended', 'prettier'],
+	extends: ["eslint:recommended",
+    "plugin:vue/vue3-recommended",
+    "plugin:prettier/recommended"],
 	// 코드 정리 플러그인 추가
 	plugins: ['prettier', 'vue'],
 	// 사용자 편의 규칙 추가
