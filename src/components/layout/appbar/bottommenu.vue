@@ -23,7 +23,7 @@ export default defineComponent({
         }
     },
     setup(props) {       
-        const router =   useRouter();
+        const router = useRouter();
         const selectedIndex = ref(null);
         const currentRoutes = useRoute()
         const currentPath = computed(() => currentRoutes.path);
@@ -38,7 +38,6 @@ export default defineComponent({
                 selectedIndex.value = index;
             }           
             router.push({ path: url });    
-            console.log(  'asdfasdfasdf')        
         }
 
 
