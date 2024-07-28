@@ -4,6 +4,7 @@ import { createPinia } from 'pinia'
 import './index.css'
 import router from './router'
 import store from './store'
+import './registerServiceWorker';
 
 const pinia = createPinia()
 

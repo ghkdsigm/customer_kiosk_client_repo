@@ -1,0 +1,15 @@
+{
+    "background_color": "#0C7E60",
+    "description": "Mpark Kiosk.",
+    "display": "fullscreen",
+    "icons": [
+      {
+        "src": "icons/icon-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      }
+    ],
+    "name": "Mpark_Kiosk", 
+    "short_name": "PWA",
+    "start_url": "/"
+  }
