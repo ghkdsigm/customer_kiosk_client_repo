@@ -1,7 +1,36 @@
-# Vue 3 + Vite
+# MPARK_KIOSK
+# Vite 5.2.0 -v
+# Vue 3.4.21
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Project setup
+```
+npm install
+```
 
-## Recommended IDE Setup
+### Compiles and hot-reloads for development
+```
+npm run dev
+```
 
-- [VS Code](https://code.visualstudio.com/) + [Vue - Official](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (previously Volar) and disable Vetur
+### Compiles and minifies for production
+```
+npm run build
+```
+
+
+## 특이사항
+> 최상단 '/' 루트는 외부 접근 제한을 위해 비어있습니다. 프로젝트는 다음 하위 항목에 3개의 프로젝트로 구분됩니다.
+> PWA가 적용되어 있습니다.
+
+### 개발서버 배포(url: https://dev.online.dongwha.com)
+1.
+### 서버(운영서버) 실행방법
+> 
+
+### 배포 방법
+1. 
+
+### 서버의 동작
+- 해당 프로젝트는 Vue3(CSR) + Vite로 개발 되어있습니다.
+
+### 배포시 주의사항

@@ -8,10 +8,8 @@
             </router-view>
         </div>            
     </div>
-    <!--//Main Section-->
     <!--Side Menu-->
     <SideMenu :sideItems="sideItems" @menu-selected="handleMenuSelected"/>   
-    <!--//Side Menu-->
   </div>
 </template>
 
@@ -170,10 +168,10 @@ export default {
 
 <style scoped>
   .screenArea { 
-    height:calc(100% - 8rem);
-    width: calc(100% - 11rem);
+    height:calc(100% - 12vh);
+    width: calc(100% - 9vw);
   }  
   .screenArea.secondMenu {
-    width: calc(100% - 305px) !important;
+    width: calc(100% - 14vw) !important;
   }
   </style>

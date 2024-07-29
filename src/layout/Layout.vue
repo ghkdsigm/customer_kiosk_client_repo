@@ -4,7 +4,6 @@
     </transition>
     <!--CustomerKiosk Bottom Menu-->
     <BottomMenu :bottomItems="bottomItems" v-if="currentPath.includes('/customerkiosk')" />   
-    <!--//CustomerKiosk Bottom Menu-->
 </template>
 
 <script>

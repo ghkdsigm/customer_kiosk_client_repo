@@ -2,7 +2,7 @@
     <div>
         <div class="min-h-0 flex-1 flex overflow-hidden sideArea" v-if="currentPath !== '/customerkiosk/searchcar' && currentPath !== '/customerkiosk/searchcarnumber'">
             <!-- 2Depth -->
-            <div class="secondTab flex-shrink-0 overflow-y-auto w-32" v-if="checkSubMenu && selectedMenu !== null">
+            <div class="secondTab flex-shrink-0 overflow-y-auto w-[5vw]" v-if="checkSubMenu && selectedMenu !== null">
                 <ul>
                     <li v-for="(item, idx) in selectedMenu.subMenu" :key="idx">
                         <div class="secondTabItems 2xl:w-[6vw] 2xl:h-[6vw] w-[3.8vw] h-[3.8vw] rounded-full flex justify-center items-center" :class="{ 'bg-[#0C7E60] text-white': selectedSecondIndex === idx }" @click="selectSecondMenu(idx)">
@@ -12,7 +12,7 @@
                 </ul>
             </div>
             <!-- 1Depth -->
-            <div aria-label="Sidebar" class="firstTab lg:block flex-shrink-0 overflow-y-auto w-44">
+            <div aria-label="Sidebar" class="firstTab lg:block flex-shrink-0 overflow-y-auto w-[9vw]">
                 <p class="w-full h-[120px] flex bg-white">
                     <img src="@/assets/img/side_logo.svg" alt="mpark" class="w-fit m-auto hover:cursor-pointer" @click="moveToIntro">
                 </p>
@@ -29,7 +29,7 @@
         <div class="min-h-0 flex-1 flex overflow-hidden sideArea" v-else>
             <!-- 구입차량조회메뉴 -->
             <!-- 1Depth -->
-            <div aria-label="SidebarCarSearch" class="firstTab lg:block flex-shrink-0 overflow-y-auto w-44">
+            <div aria-label="SidebarCarSearch" class="firstTab lg:block flex-shrink-0 overflow-y-auto w-[9vw]">
                 <p class="w-full h-[120px] flex bg-white">
                     <img src="@/assets/img/side_logo.svg" alt="mpark" class="w-fit m-auto hover:cursor-pointer" @click="moveToIntro">
                 </p>
@@ -167,7 +167,7 @@ export default defineComponent({
     top: 0;
     position: absolute;
     right: 0;
-    height: calc(100% - 8rem);
+    height: calc(100% - 12vh);
     box-shadow: -4px 0px 15px 0px #00000026;    
 }
 .secondTab {

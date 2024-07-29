@@ -55,6 +55,9 @@ export default defineConfig({
       }
     })
   ],
+  define: {
+    'process.env': process.env
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -66,5 +69,4 @@ export default defineConfig({
   compilerOptions: {
     isCustomElement: (tag) => tag.startsWith('custom-') // 맞춤형 요소 설정
   }
-
 })

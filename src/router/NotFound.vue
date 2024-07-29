@@ -6,7 +6,7 @@
       <div class="text-9xl">404</div>
       <div class="text-2xl">페이지가 존재하지않습니다.</div>
       <button>
-        <a href="/customerkiosk" class="border-2 border-black hover:text-primary hover:border-primary dark:border-gray-100 dark:hover:border-primary py-2 px-6 mt-5 block rounded-full">홈으로</a>
+        <a href="/customerkiosk" class="border-2 border-black hover:text-primary hover:border-primary dark:border-gray-100 dark:hover:border-primary py-2 px-6 mt-5 block rounded-full">고객키오스크로</a>
       </button>
     </div>
   </template>

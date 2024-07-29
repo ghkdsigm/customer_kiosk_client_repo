@@ -1,6 +1,6 @@
 //import { createStore } from 'vuex';
 import { defineStore } from 'pinia'
-//import createPersistedState from 'vuex-persistedstate';
+import http from "@/api/utils/request";
 
 export const useMparkStore = defineStore('counter', {
   state: () => ({

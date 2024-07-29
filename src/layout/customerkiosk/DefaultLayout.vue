@@ -7,8 +7,7 @@
               <component :is="Component"></component>
             </router-view>
         </div>            
-    </div>
-    <!--//Main Section-->    
+    </div> 
   </div>
 </template>
 
@@ -51,6 +50,6 @@ export default {
 
 <style scoped>
   .screenArea {
-    height:calc(100% - 8rem)
+    height:calc(100% - 12vh)
   }
 </style>
