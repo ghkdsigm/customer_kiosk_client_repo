@@ -22,7 +22,7 @@
 import { ref, onMounted, computed } from 'vue'
 //import router from '../router'
 import SideMenu from '@/components/layout/appbar/sidemenu.vue'
-import Search from '@/components/common/keyboard/board.vue'
+import Search from '@/components/common/keyboard/customKeyboard.vue'
 import { useRoute } from 'vue-router';
 import { useCommonStore } from '@/store/common'
 
