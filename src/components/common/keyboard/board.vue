@@ -1,3 +1,12 @@
+
+한글 입력이 "가다마"로 잘못 입력되는 문제는 각 상태 변수 (cho, jung, jong)의 업데이트와 한글 조합 로직에 문제가 있을 수 있습니다. 입력 상태를 명확히 유지하고, 업데이트하는 과정에서의 순서를 재확인해야 합니다.
+
+개선된 코드
+먼저 부모 컴포넌트를 수정하고, 그 다음 자식 컴포넌트를 수정하겠습니다.
+
+부모 컴포넌트
+vue
+코드 복사
 <template>
   <div class="search-container" @click.self="hideKeyboard">
     <input
@@ -8,17 +17,14 @@
       readonly
     />
   </div>
-  <!-- <transition name="slide-up">
-    <Search :input="query" @key-click="handleKeyClick" />
-  </transition> -->
-  <Search :input="query" @key-click="handleKeyClick" />
+  <Search @key-click="handleKeyClick" />
 </template>
 
 <script>
 import { ref } from 'vue'
-import { useCommonStore } from '@/store/common'
 import Search from '@/components/common/keyboard/search.vue'
 import { composeHangul, isConsonant, isVowel, isJongseong } from '@/utils/hangul'
+
 export default {
   components: {
     Search
@@ -56,15 +62,19 @@ export default {
 
     const handleHangulInput = (key) => {
       if (key.length === 1 && /[\u3131-\u3163]/.test(key)) {
-        if (isConsonant(key)) { // 초성
+        if (isConsonant(key)) {
           if (!cho.value) {
             cho.value = key
           } else if (jung.value) {
             jong.value = key
+            query.value += composeHangul(cho.value, jung.value, jong.value)
+            cho.value = ''
+            jung.value = ''
+            jong.value = ''
           } else {
             cho.value = key
           }
-        } else if (isVowel(key)) { // 중성
+        } else if (isVowel(key)) {
           if (cho.value && !jung.value) {
             jung.value = key
           } else {
@@ -73,9 +83,13 @@ export default {
             jung.value = key
             jong.value = ''
           }
-        } else if (isJongseong(key)) { // 종성
+        } else if (isJongseong(key)) {
           if (cho.value && jung.value) {
             jong.value = key
+            query.value += composeHangul(cho.value, jung.value, jong.value)
+            cho.value = ''
+            jung.value = ''
+            jong.value = ''
           } else {
             query.value += composeHangul(cho.value, jung.value, jong.value)
             cho.value = ''
