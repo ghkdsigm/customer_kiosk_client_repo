@@ -6,10 +6,15 @@
             <router-view v-slot="{ Component }">
               <component :is="Component"></component>
             </router-view>
+            <!-- 키보드 표시 버튼 (여기서도 사용할 수 있음) -->
+            <button @click="toggleKeyboard" class="show-keyboard-button">키보드 표시</button>
         </div>            
     </div>
     <!--Side Menu-->
-    <SideMenu :sideItems="sideItems" @menu-selected="handleMenuSelected"/>   
+      <SideMenu :sideItems="sideItems" @menu-selected="handleMenuSelected"/>  
+    <!-- Search -->
+        
+    <Search />
   </div>
 </template>
 
@@ -17,11 +22,14 @@
 import { ref, onMounted, computed } from 'vue'
 //import router from '../router'
 import SideMenu from '@/components/layout/appbar/sidemenu.vue'
+import Search from '@/components/common/keyboard/board.vue'
 import { useRoute } from 'vue-router';
+import { useCommonStore } from '@/store/common'
 
 export default {    
   components: {   
     SideMenu,
+    Search
   },
   props:{
     // bottomItems: {
@@ -32,6 +40,7 @@ export default {
   setup(){
     const currentRoutes = useRoute()
     const currentPath = computed(() => currentRoutes.path);
+    const commonStore = useCommonStore()
     //const routes = ref([])      
 
     //Side전용
@@ -143,6 +152,11 @@ export default {
       // Do something when menu is selected
     };
 
+    const toggleKeyboard = () => {
+      commonStore.toggleKeyboard()
+    }
+
+
     onMounted(() => {
     })
     // onBeforeUpdate(() => {
@@ -160,7 +174,8 @@ export default {
       sideItems,
       handleMenuSelected,
       checkSide,
-      currentPath  
+      currentPath,
+      toggleKeyboard
     }
   },    
 }
