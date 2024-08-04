@@ -6,9 +6,27 @@
   </template>
   
   <script>
+  import { onMounted, onUnmounted } from 'vue'
+  import { useRouter } from 'vue-router'
   export default {
-  name: 'emptyHome',
-  
+    name: 'emptyHome',
+    setup() {
+        const router = useRouter()
+
+        const handleKeydown = (event) => {
+            if (event.ctrlKey && event.key === 'm') {
+                router.push('customerkiosk')
+            }
+        }
+
+        onMounted(() => {
+        window.addEventListener('keydown', handleKeydown)
+        })
+
+        onUnmounted(() => {
+        window.removeEventListener('keydown', handleKeydown)
+        })
+    }
   }
   </script>
   
