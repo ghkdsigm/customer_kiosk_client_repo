@@ -1,7 +1,7 @@
 <template>
     <div class="keyboard-container">
       <input type="text" ref="keyboardInput" placeholder="검색어를 입력하세요" readonly />
-      <div ref="keyboardZone"></div>
+      <div ref="keyboardZone" class="virtualKeyboard"></div>
     </div>
   </template>
   
@@ -189,23 +189,128 @@
   </script>
   
   <style scoped>
-  .keyboard-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    padding: 2rem;
-    position: absolute;
-    bottom: 442px;
-  }
-  
-  input {
-    padding: 0.5rem 1rem;
-    font-size: 1.5rem;
-    border: 2px solid #ccc;
-    border-radius: 0.5rem;
-    width: 100%;
-    max-width: 400px;
-  }
-  </style>
-  
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th {
+  border: 1px solid #ddd;
+  text-align: center;
+  padding: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+th:hover {
+  background-color: #e0e0e0;
+}
+
+th:active {
+  background-color: #ccc;
+}
+
+.shift, .lang-switch {
+  background-color: #007bff;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+.space {
+  background-color: #6c757d;
+  color: #fff;
+  border-radius: 5px;
+}
+.keyboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  position: absolute;
+  bottom: 442px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+input {
+  padding: 0.5rem 1rem;
+  font-size: 1.5rem;
+  border: 2px solid #ccc;
+  border-radius: 0.5rem;
+  width: 100%;
+  max-width: 400px;
+  background-color: #fff;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.key-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+.keyline {
+  display: flex;
+  width: 100%;
+}
+
+.key {
+  flex: 1;
+  margin: 2px;
+  text-align: center;
+  padding: 10px;
+  font-size: 1.2rem;
+  border-radius: 5px;
+  background-color: #f1f1f1;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.key:hover {
+  background-color: #e0e0e0;
+}
+
+.key:active {
+  background-color: #ccc;
+}
+
+.key.special {
+  background-color: #007bff;
+  color: #fff;
+  font-weight: bold;
+}
+
+.key.space {
+  flex: 2;
+  background-color: #6c757d;
+  color: #fff;
+  font-weight: bold;
+}
+
+.key.special:hover,
+.key.space:hover {
+  background-color: #0056b3;
+}
+
+.key.special:active,
+.key.space:active {
+  background-color: #00408c;
+}
+
+.hidden {
+  display: none;
+}
+
+.virtualKeyboard table th {
+    background:red;
+    color:red;
+}
+</style>
