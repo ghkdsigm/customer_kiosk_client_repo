@@ -19,28 +19,28 @@
   
       const form = {
         koNormal: [
-          ['뒤로', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'backspace'],
+          ['초기화','뒤로', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'backspace'],
           ['ㅂ', 'ㅈ', 'ㄷ', 'ㄱ', 'ㅅ', 'ㅛ', 'ㅕ', 'ㅑ', 'ㅐ', 'ㅔ'],
           ['ㅁ', 'ㄴ', 'ㅇ', 'ㄹ', 'ㅎ', 'ㅗ', 'ㅓ', 'ㅏ', 'ㅣ', 'enter'],
           ['shift', 'ㅋ', 'ㅌ', 'ㅊ', 'ㅍ', 'ㅠ', 'ㅜ', 'ㅡ', '한/영'],
           ['space']
         ],
         koShift: [
-          ['뒤로', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', 'backspace'],
+          ['초기화','뒤로', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', 'backspace'],
           ['ㅃ', 'ㅉ', 'ㄸ', 'ㄲ', 'ㅆ', 'ㅛ', 'ㅕ', 'ㅑ', 'ㅒ', 'ㅖ'],
           ['ㅁ', 'ㄴ', 'ㅇ', 'ㄹ', 'ㅎ', 'ㅗ', 'ㅓ', 'ㅏ', 'ㅣ', 'enter'],
           ['shift', 'ㅋ', 'ㅌ', 'ㅊ', 'ㅍ', 'ㅠ', 'ㅜ', 'ㅡ', '한/영'],
           ['space']
         ],
         enNormal: [
-          ['뒤로', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'backspace'],
+          ['초기화','뒤로', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'backspace'],
           ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
           ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'enter'],
           ['shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', '한/영'],
           ['space']
         ],
         enShift: [
-          ['뒤로', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', 'backspace'],
+          ['초기화','뒤로', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', 'backspace'],
           ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
           ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'enter'],
           ['shift', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '한/영'],
@@ -92,31 +92,31 @@
       function keyfun(event) {
         const key = event.target.innerText;
         if (key === '뒤로') {
-          onESC();
-          return;
+            onESC();
+            return;
+        } else if (key === '초기화') {
+            resetKeyboard();
+            return;
         } else if (key === 'enter') {
-          onEnter(getText());
-          return;
+            onEnter(getText());
+            return;
         } else if (key === '한/영') {
-          toggleLang();
-          return;
+            toggleLang();
+            return;
         } else if (key === 'shift') {
-          toggleShift();
-          return;
+            toggleShift();
+            return;
         } else if (key === 'backspace') {
-          charlist.value.splice(charlist.value.length - 1, 1);
+            charlist.value.splice(charlist.value.length - 1, 1);
         } else if (key === 'space') {
-          charlist.value.push(" ");
+            charlist.value.push(" ");
         } else {
-          charlist.value.push(key);
+            charlist.value.push(key);
         }
-  
+
         const text = Hangul.assemble(charlist.value);
         keyboardInput.value.value = text;
-        if (onClick != null) {
-          onClick(getText());
-        }
-      }
+    }
   
       function toggleLang() {
         keydiv.value[nowlang.value].style.visibility = "hidden";
@@ -151,12 +151,23 @@
       }
   
       function onEnter(text) {
-        alert(`검색어: ${text}`);
+        if(text !== '') {
+            alert(`검색어: ${text}`);
+            resetKeyboard()
+        } else {
+            alert(`검색어를 입력해주세요.`)
+        }
       }
   
       function getText() {
         return Hangul.assemble(charlist.value);
       }
+
+      function resetKeyboard() {
+        charlist.value = [];
+        keyboardInput.value.value = '';
+        // 추가적으로 초기화 후 필요한 동작을 여기서 수행할 수 있습니다.
+        }
   
       return {
         keyboardInput,
@@ -170,7 +181,8 @@
         toggleShift,
         onESC,
         onEnter,
-        getText
+        getText,
+        resetKeyboard
       };
     }
   };
