@@ -7,14 +7,14 @@
               <component :is="Component"></component>
             </router-view>
             <!-- 키보드 표시 버튼 (여기서도 사용할 수 있음) -->
-            <button @click="toggleKeyboard" class="show-keyboard-button">키보드 표시</button>
+            <!-- <button @click="toggleKeyboard" class="show-keyboard-button">키보드 표시</button> -->
         </div>            
     </div>
     <!--Side Menu-->
       <SideMenu :sideItems="sideItems" @menu-selected="handleMenuSelected"/>  
     <!-- Search -->
         
-    <Search />
+    <Search v-if="currentPath.includes('/employee') && checkEmployee" />
   </div>
 </template>
 
@@ -38,6 +38,7 @@ export default {
     // }
   },
   setup(){
+    let checkEmployee = ref(true)
     const currentRoutes = useRoute()
     const currentPath = computed(() => currentRoutes.path);
     const commonStore = useCommonStore()
@@ -171,6 +172,7 @@ export default {
     return {
       // routes,
       // router,  
+      checkEmployee,
       sideItems,
       handleMenuSelected,
       checkSide,

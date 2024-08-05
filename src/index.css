@@ -5,6 +5,10 @@
 /* Pretendard 폰트 설정 */
 body {
     font-family: 'Pretendard', ui-sans-serif, system-ui;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-use-select: none;
+    user-select: none;
 }
 
 @font-face {
@@ -59,9 +63,16 @@ button {
 
 .tit {
     font-weight:700;
-    font-size:28px
+    font-size:1.1vw;
 }
 .mainTit {
     font-weight:700;
-    font-size:58px
+    font-size:2.3vw;
+}
+
+.keybutton:active {
+    position: relative;
+    top: 2px;
+    transition: all 0.2s ease;
+    opacity: 0.5;
 }
