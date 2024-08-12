@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="relative h-[67vh]">
 		<div class="position_info">
 			<div class="flex items-end mb-[40px]">
 				<h1 class="mr-[36px] mainTit">{{ floorTitle }}</h1>
@@ -31,7 +31,7 @@
 		</div>
 
     <div
-      class="overflow-hidden touch-none relative"
+      class="overflow-hidden touch-none relative h-full"
       ref="zoomContainer"
       @touchstart="onTouchStart"
       @touchmove="onTouchMove"
@@ -42,7 +42,7 @@
         :src="imageSrc"
         alt="Zoomable"
         :style="imageStyle"
-        class="w-full h-[54vh]"
+        class="w-full h-[54vh] absolute top-0 left-0"
       />
     </div>
 
