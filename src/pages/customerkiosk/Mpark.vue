@@ -169,6 +169,7 @@ setup() {
       titleEN,
       floorTitle,
       imageSrc,
+      imageStyle,
       zoomContainer,
       onTouchStart,
       onTouchMove,
