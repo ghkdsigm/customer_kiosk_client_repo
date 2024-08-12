@@ -31,7 +31,7 @@
 		</div>
 
     <div
-      class="overflow-hidden touch-none"
+      class="overflow-hidden touch-none relative"
       ref="zoomContainer"
       @touchstart="onTouchStart"
       @touchmove="onTouchMove"
@@ -126,10 +126,15 @@ setup() {
     const imageStyle = ref({
       transform: 'scale(1)',
       transformOrigin: 'center center',
+      top: '0px',
+      left: '0px',
     });
 
     let startDistance = 0;
     let currentScale = 1;
+    let isPanning = false;
+    let panStart = { x: 0, y: 0 };
+    let panPosition = { x: 0, y: 0 };
 
     const calculateDistance = (touches) => {
       const [touch1, touch2] = touches;
@@ -141,6 +146,13 @@ setup() {
     const onTouchStart = (event) => {
       if (event.touches.length === 2) {
         startDistance = calculateDistance(event.touches);
+        isPanning = false;
+      } else if (event.touches.length === 1 && currentScale > 1) {
+        isPanning = true;
+        panStart = {
+          x: event.touches[0].clientX - panPosition.x,
+          y: event.touches[0].clientY - panPosition.y,
+        };
       }
     };
 
@@ -155,13 +167,30 @@ setup() {
         imageStyle.value.transform = `scale(${currentScale})`;
 
         startDistance = newDistance;
+      } else if (isPanning && event.touches.length === 1) {
+        event.preventDefault();
+
+        const newX = event.touches[0].clientX - panStart.x;
+        const newY = event.touches[0].clientY - panStart.y;
+
+        panPosition = {
+          x: newX,
+          y: newY,
+        };
+
+        imageStyle.value.left = `${panPosition.x}px`;
+        imageStyle.value.top = `${panPosition.y}px`;
       }
     };
 
     const onTouchEnd = () => {
+      isPanning = false;
+
       if (currentScale < 1) {
         currentScale = 1;
         imageStyle.value.transform = `scale(1)`;
+        imageStyle.value.left = '0px';
+        imageStyle.value.top = '0px';
       }
     };
 
