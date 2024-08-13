@@ -30,21 +30,35 @@
 			</ul>
 		</div>
 
-    <div
-      class="overflow-hidden touch-none relative h-full"
-      ref="zoomContainer"
+    <!-- 핀치줌 영역 -->
+     <div
+      class="overflow-hidden relative w-full h-full"
+      ref="container"
       @touchstart="onTouchStart"
       @touchmove="onTouchMove"
       @touchend="onTouchEnd"
     >
-      <!-- <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ6nHAV7qhVnIUZ440C2-q0l1DsnmDP-TPAg&s" alt="" class="w-full h-[54vh]"> -->
-      <img
-        :src="imageSrc"
-        alt="Zoomable"
-        :style="imageStyle"
-        class="max-w-full h-auto w-full h-[54vh] absolute top-0 left-0"
-      />
+      <div
+        ref="zoomableArea"
+        :style="zoomableAreaStyle"
+        class="absolute top-0 left-0 w-full h-full"
+      >
+        <!-- 여기에 이미지 및 absolute 요소들을 추가하세요 -->
+        <img
+          :src="imageSrc"
+          alt="Zoomable"
+          class="w-full h-auto"
+        />
+        <div
+          class="absolute bg-red-500 text-white"
+          style="top: 20%; left: 30%; width: 100px; height: 100px;"
+        >
+          Some overlay
+        </div>
+        <!-- 추가적인 absolute 요소들을 여기에 추가 -->
+      </div>
     </div>
+    <!-- //핀치줌 영역 -->
 
 		<div class="facility">
 			<div class="inner">
@@ -122,9 +136,9 @@ setup() {
     const floorTitle = computed(() => mparkStore.floorTitle)
     const imageSrc = ref('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ6nHAV7qhVnIUZ440C2-q0l1DsnmDP-TPAg&s');
     
-    const zoomContainer = ref(null);
-    const zoomImage = ref(null);
-    const imageStyle = ref({
+    const container = ref(null);
+    const zoomableArea = ref(null);
+    const zoomableAreaStyle = ref({
       transform: 'scale(1)',
       transformOrigin: 'center center',
       top: '0px',
@@ -165,31 +179,34 @@ setup() {
         const scaleChange = newDistance / startDistance;
 
         currentScale = Math.min(Math.max(currentScale * scaleChange, 1), 4); // 최소 1배, 최대 4배 확대/축소
-        imageStyle.value.transform = `scale(${currentScale})`;
+        zoomableAreaStyle.value.transform = `scale(${currentScale})`;
 
         startDistance = newDistance;
       } else if (isPanning && event.touches.length === 1) {
         event.preventDefault();
 
-        const containerRect = zoomContainer.value.getBoundingClientRect();
-        const imageRect = zoomImage.value.getBoundingClientRect();
+        const containerRect = container.value.getBoundingClientRect();
+        const zoomableAreaRect = zoomableArea.value.getBoundingClientRect();
 
         const newX = event.touches[0].clientX - panStart.x;
         const newY = event.touches[0].clientY - panStart.y;
 
+        const scaledWidth = zoomableAreaRect.width * currentScale;
+        const scaledHeight = zoomableAreaRect.height * currentScale;
+
         // 이미지가 컨테이너의 경계를 벗어나지 않도록 위치 제한
         const maxLeft = 0;
         const maxTop = 0;
-        const minLeft = containerRect.width - imageRect.width * currentScale;
-        const minTop = containerRect.height - imageRect.height * currentScale;
+        const minLeft = containerRect.width - scaledWidth;
+        const minTop = containerRect.height - scaledHeight;
 
         panPosition = {
           x: Math.min(Math.max(newX, minLeft), maxLeft),
           y: Math.min(Math.max(newY, minTop), maxTop),
         };
 
-        imageStyle.value.left = `${panPosition.x}px`;
-        imageStyle.value.top = `${panPosition.y}px`;
+        zoomableAreaStyle.value.left = `${panPosition.x}px`;
+        zoomableAreaStyle.value.top = `${panPosition.y}px`;
       }
     };
 
@@ -198,9 +215,9 @@ setup() {
 
       if (currentScale < 1) {
         currentScale = 1;
-        imageStyle.value.transform = `scale(1)`;
-        imageStyle.value.left = '0px';
-        imageStyle.value.top = '0px';
+        zoomableAreaStyle.value.transform = `scale(1)`;
+        zoomableAreaStyle.value.left = '0px';
+        zoomableAreaStyle.value.top = '0px';
       }
     };
 
@@ -208,8 +225,6 @@ setup() {
       titleEN,
       floorTitle,
       imageSrc,
-      imageStyle,
-      zoomContainer,
       onTouchStart,
       onTouchMove,
       onTouchEnd
