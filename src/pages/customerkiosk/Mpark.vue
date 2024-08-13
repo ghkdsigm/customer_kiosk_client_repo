@@ -1,50 +1,52 @@
 <template>
-  <div>
-    <div ref="demoBox" class="demobox cursor-grab overflow-hidden relative flex items-center justify-center bg-gray-100 w-64 h-64">
-      <div ref="demo" class="pinchable h-16 w-16 bg-blue-400 border-4 border-blue-600 rounded-lg">
-        <!-- Content to zoom -->
-      </div>
+    <!-- Directive usage -->
+    <div ref="demo2" style="height: 300px; width: 300px; background-color: red">
+        <div ref="demo" v-pinch="pinchHandler" style="height: 150px; width: 150px; background-color: blue" />
+        <div ref="dragGo" v-drag="dragHandler" style="height: 150px; width: 150px; background-color: black" />
     </div>
-  </div>
 </template>
-
+ 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { usePinch } from '@vueuse/gesture';
-
-const demoBox = ref(null);
-const demo = ref(null);
-
-const pinchHandler = ({ offset: [scale, angle] }) => {
-  if (demo.value) {
-    demo.value.style.transform = `scale(${scale}) rotate(${angle}deg)`;
-  }
-};
-
-// Use `usePinch` with the correct target
-onMounted(() => {
-  const p = usePinch(pinchHandler, {
-    domTarget: demoBox.value,
+import { ref } from 'vue'
+import { usePinch, useDrag } from '@vueuse/gesture'
+import { useMotionProperties, useSpring } from '@vueuse/motion'
+const demo = ref()
+const demo2 = ref()
+const dragGo = ref()
+ 
+// Find more about `set()` on the "Motion Integration" page
+const { motionProperties } = useMotionProperties(dragGo, {
+    cursor: 'grab',
+    x: 0,
+    y: 0,
+})
+ 
+const { set } = useSpring(motionProperties)
+ 
+const pinchHandler = ({ offset: [d, a], pinching }) => {
+    set({ zoom: d, rotateZ: a })
+}
+const dragHandler = ({ movement: [x, y], dragging }) => {
+    if (!dragging) {
+        set({ x: 0, y: 0, cursor: 'grab' })
+        return
+    }
+ 
+    set({
+        cursor: 'grabbing',
+        x,
+        y,
+    })
+}
+ 
+// Composable usage
+usePinch(pinchHandler, {
+    domTarget: demo,
     eventOptions: {
-      passive: false
+        passive: true,
     },
-  });
-
-  p.config.pinch.bounds[0] = [-900, 1000]
-});
+})
+useDrag(dragHandler, {
+    domTarget: dragGo,
+})
 </script>
-
-<style>
-.demobox {
-  background: gray;
-  width: 100%;
-  height: 400px; /* Adjust as needed */
-  overflow: hidden;
-}
-
-.pinchable {
-  width: 100px;
-  height: 100px;
-  background: green; /* Content color */
-}
-</style>

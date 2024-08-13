@@ -4,14 +4,10 @@ import { createPinia } from 'pinia'
 import './index.css'
 import router from './router'
 import store from './store'
-import './registerServiceWorker';
-import Hangul from 'hangul-js'; 
-
+import './registerServiceWorker'
+import { GesturePlugin } from '@vueuse/gesture'
+import { MotionPlugin } from '@vueuse/motion'
 const pinia = createPinia()
-const app = createApp(App);
-
-
-// hangul-js를 전역 속성으로 추가합니다.
-app.config.globalProperties.$hangul = Hangul;
-
-app.use(pinia).use(router).use(store).mount('#app')
+ 
+createApp(App).use(pinia).use(router).use(store).use(GesturePlugin).use(MotionPlugin).mount('#app')
+ 
