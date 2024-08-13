@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="relative h-[67vh]">
 		<div class="position_info">
 			<div class="flex items-end mb-[40px]">
 				<h1 class="mr-[36px] mainTit">{{ floorTitle }}</h1>
@@ -31,7 +31,7 @@
 		</div>
 
     <div
-      class="overflow-hidden touch-none relative"
+      class="overflow-hidden touch-none relative h-full"
       ref="zoomContainer"
       @touchstart="onTouchStart"
       @touchmove="onTouchMove"
@@ -42,7 +42,7 @@
         :src="imageSrc"
         alt="Zoomable"
         :style="imageStyle"
-        class="w-full h-[54vh]"
+        class="max-w-full h-auto w-full h-[54vh] absolute top-0 left-0"
       />
     </div>
 
@@ -123,6 +123,7 @@ setup() {
     const imageSrc = ref('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ6nHAV7qhVnIUZ440C2-q0l1DsnmDP-TPAg&s');
     
     const zoomContainer = ref(null);
+    const zoomImage = ref(null);
     const imageStyle = ref({
       transform: 'scale(1)',
       transformOrigin: 'center center',
@@ -170,12 +171,21 @@ setup() {
       } else if (isPanning && event.touches.length === 1) {
         event.preventDefault();
 
+        const containerRect = zoomContainer.value.getBoundingClientRect();
+        const imageRect = zoomImage.value.getBoundingClientRect();
+
         const newX = event.touches[0].clientX - panStart.x;
         const newY = event.touches[0].clientY - panStart.y;
 
+        // 이미지가 컨테이너의 경계를 벗어나지 않도록 위치 제한
+        const maxLeft = 0;
+        const maxTop = 0;
+        const minLeft = containerRect.width - imageRect.width * currentScale;
+        const minTop = containerRect.height - imageRect.height * currentScale;
+
         panPosition = {
-          x: newX,
-          y: newY,
+          x: Math.min(Math.max(newX, minLeft), maxLeft),
+          y: Math.min(Math.max(newY, minTop), maxTop),
         };
 
         imageStyle.value.left = `${panPosition.x}px`;
