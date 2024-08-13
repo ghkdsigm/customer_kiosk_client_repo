@@ -23,12 +23,14 @@ const pinchHandler = ({ offset: [scale, angle] }) => {
 
 // Use `usePinch` with the correct target
 onMounted(() => {
-  usePinch(pinchHandler, {
-    domTarget: demoBox,
+  const p = usePinch(pinchHandler, {
+    domTarget: rootNode,
     eventOptions: {
-      passive: true,
+      passive: false
     },
   });
+
+  p.config.pinch.bounds[0] = [-900, 1000]
 });
 </script>
 
