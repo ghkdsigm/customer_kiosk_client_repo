@@ -35,7 +35,6 @@
       ref="container"
       class="relative w-full h-[400px] overflow-hidden bg-gray-100"
       @touchstart="onTouchStart"
-      @click="onTouchStart"
       @touchmove="onTouchMove"
       @touchend="onTouchEnd"
     >
