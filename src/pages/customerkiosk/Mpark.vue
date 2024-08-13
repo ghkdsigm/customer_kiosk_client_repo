@@ -14,14 +14,14 @@ const demo = ref()
 const demo2 = ref()
 // const dragGo = ref()
  
-// Find more about `set()` on the "Motion Integration" page
-// const { motionProperties } = useMotionProperties(dragGo, {
-//     cursor: 'grab',
-//     x: 0,
-//     y: 0,
-// })
+//Find more about `set()` on the "Motion Integration" page
+const { motionProperties } = useMotionProperties(demo, {
+    cursor: 'grab',
+    x: 0,
+    y: 0,
+})
  
-//const { set } = useSpring(motionProperties)
+const { set } = useSpring(motionProperties)
  
 const pinchHandler = ({ offset: [d, a], pinching }) => {
     set({ zoom: d, rotateZ: a })
