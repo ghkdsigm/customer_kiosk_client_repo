@@ -68,5 +68,16 @@ export default defineConfig({
   },
   compilerOptions: {
     isCustomElement: (tag) => tag.startsWith('custom-') // 맞춤형 요소 설정
-  }
+  },
+  // build: {
+  //   rollupOptions: {
+  //     output: {
+  //       manualChunks(id) {
+  //         if (id.includes('node_modules')) {
+  //           return id.toString().split('node_modules/')[1].split('/')[0].toString();
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 })

@@ -34,9 +34,6 @@
     <div
       ref="container"
       class="relative w-full h-[400px] overflow-hidden bg-gray-100"
-      @touchstart="onTouchStart"
-      @touchmove="onTouchMove"
-      @touchend="onTouchEnd"
     >
       <div
         ref="zoomableElement"
@@ -69,6 +66,7 @@
 import { ref, computed } from 'vue';
 import { useTitleEN } from '@/composables/useTitleEN';
 import { useMparkStore } from '@/store/mpark'
+import { useGesture } from '@vueuse/gesture';
 
 export default {
   name: 'PageMpark',
@@ -82,100 +80,34 @@ export default {
     const zoomableElement = ref(null);
     const zoomableStyle = ref({
       transform: 'scale(1) translate(0px, 0px)',
-      transformOrigin: '0% 0%', // 기본 transform origin
+      transformOrigin: 'center center',
     });
 
-    let initialDistance = 0;
     let currentScale = 1;
-    let isPanning = false;
-    let panStart = { x: 0, y: 0 };
     let panPosition = { x: 0, y: 0 };
 
-    const calculateDistance = (touches) => {
-      const [touch1, touch2] = touches;
-      const dx = touch1.clientX - touch2.clientX;
-      const dy = touch1.clientY - touch2.clientY;
-      return Math.sqrt(dx * dx + dy * dy);
-    };
+    useGesture(container, {
+      onPinch: ({ offset: [scale], memo }) => {
+        if (!memo) memo = currentScale;
 
-    const getTouchCenter = (touches) => {
-      const [touch1, touch2] = touches;
-      return {
-        x: (touch1.clientX + touch2.clientX) / 2,
-        y: (touch1.clientY + touch2.clientY) / 2,
-      };
-    };
-
-    const onTouchStart = (event) => {
-      console.log('Touch Start Event:', event);
-      if (event.touches.length === 2) {
-        event.preventDefault();
-        initialDistance = calculateDistance(event.touches);
-        isPanning = false;
-      } else if (event.touches.length === 1 && currentScale > 1) {
-        isPanning = true;
-        panStart = {
-          x: event.touches[0].clientX - panPosition.x,
-          y: event.touches[0].clientY - panPosition.y,
-        };
-      }
-    };
-
-    const onTouchMove = (event) => {
-      console.log('Touch Move Event:', event);
-      if (event.touches.length === 2) {
-        event.preventDefault();
-
-        const newDistance = calculateDistance(event.touches);
-        const scaleChange = newDistance / initialDistance;
-        currentScale = Math.min(Math.max(currentScale * scaleChange, 1), 4); // 최소 1배, 최대 4배 확대/축소
-
-        const containerRect = container.value.getBoundingClientRect();
-        const newPinchCenter = getTouchCenter(event.touches);
-
-        const centerX = (newPinchCenter.x - containerRect.left) / containerRect.width;
-        const centerY = (newPinchCenter.y - containerRect.top) / containerRect.height;
-
-        zoomableStyle.value.transformOrigin = `${centerX * 100}% ${centerY * 100}%`;
+        const newScale = Math.min(Math.max(memo * scale, 1), 4); // 최소 1배, 최대 4배
+        currentScale = newScale;
 
         zoomableStyle.value.transform = `scale(${currentScale}) translate(${panPosition.x}px, ${panPosition.y}px)`;
-
-        initialDistance = newDistance;
-      } else if (isPanning && event.touches.length === 1) {
-        event.preventDefault();
-
-        const newX = event.touches[0].clientX - panStart.x;
-        const newY = event.touches[0].clientY - panStart.y;
-
-        const zoomableRect = zoomableElement.value.getBoundingClientRect();
-        const containerRect = container.value.getBoundingClientRect();
-
-        const scaledWidth = zoomableRect.width * currentScale;
-        const scaledHeight = zoomableRect.height * currentScale;
-
-        const maxX = Math.min(containerRect.width - scaledWidth, 0);
-        const maxY = Math.min(containerRect.height - scaledHeight, 0);
-        const minX = Math.max(containerRect.width - scaledWidth, 0);
-        const minY = Math.max(containerRect.height - scaledHeight, 0);
+        return memo;
+      },
+      onDrag: ({ movement: [mx, my], memo }) => {
+        if (!memo) memo = { ...panPosition };
 
         panPosition = {
-          x: Math.min(Math.max(newX, minX), maxX),
-          y: Math.min(Math.max(newY, minY), maxY),
+          x: memo.x + mx,
+          y: memo.y + my,
         };
 
         zoomableStyle.value.transform = `scale(${currentScale}) translate(${panPosition.x}px, ${panPosition.y}px)`;
-      }
-    };
-
-    const onTouchEnd = () => {
-      isPanning = false;
-
-      if (currentScale < 1) {
-        currentScale = 1;
-        zoomableStyle.value.transform = `scale(1) translate(0px, 0px)`;
-        panPosition = { x: 0, y: 0 };
-      }
-    };
+        return memo;
+      },
+    });
 
     // 시설 데이터
     const facilities = ref([
@@ -195,9 +127,6 @@ export default {
       imageSrc,
       zoomableElement,
       zoomableStyle,
-      onTouchStart,
-      onTouchMove,
-      onTouchEnd,
       facilities
     };
   }
