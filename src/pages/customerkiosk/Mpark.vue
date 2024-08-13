@@ -227,8 +227,11 @@ setup() {
       imageSrc,
       onTouchStart,
       onTouchMove,
+      onTouchEnd,
+      container,
+      zoomableArea,
       zoomableAreaStyle,
-      onTouchEnd
+      calculateDistance,      
     };
   }
 });
