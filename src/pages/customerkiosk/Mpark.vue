@@ -1,52 +1,64 @@
 <template>
-    <!-- Directive usage -->
-    <div ref="demo2" style="height: 300px; width: 300px; background-color: red">
-        <div ref="demo" v-pinch="pinchHandler" style="height: 150px; width: 150px; background-color: blue" />
-        <!-- <div ref="dragGo" v-drag="dragHandler" style="height: 150px; width: 150px; background-color: black" /> -->
-    </div>
+  <div id="app">
+    <PinchScrollZoom
+      ref="zoomer"
+      :width="300"
+      :height="400"
+      :scale="scale"
+      @scaling="scalingHandler"
+      style="border: 1px solid black"
+    >
+      <img src="https://picsum.photos/600/1000" width="300" height="400" />
+    </PinchScrollZoom>
+    <PinchScrollZoom
+      ref="zoomer"
+      :width="300"
+      :height="400"
+      :scale="scale"
+      @scaling="scalingHandler"
+      style="border: 1px solid black"
+    >
+      <img src="https://picsum.photos/600/1000" width="300" height="400" />
+    </PinchScrollZoom>
+  </div>
 </template>
- 
+
 <script setup>
-import { ref } from 'vue'
-import { usePinch, useDrag } from '@vueuse/gesture'
-import { useMotionProperties, useSpring } from '@vueuse/motion'
-const demo = ref()
-const demo2 = ref()
-// const dragGo = ref()
- 
-//Find more about `set()` on the "Motion Integration" page
-const { motionProperties } = useMotionProperties(demo, {
-    cursor: 'grab',
-    x: 0,
-    y: 0,
-})
- 
-const { set } = useSpring(motionProperties)
- 
-const pinchHandler = ({ offset: [d, a], pinching }) => {
-    set({ zoom: d, rotateZ: a })
-}
-// const dragHandler = ({ movement: [x, y], dragging }) => {
-//     if (!dragging) {
-//         set({ x: 0, y: 0, cursor: 'grab' })
-//         return
-//     }
- 
-//     set({
-//         cursor: 'grabbing',
-//         x,
-//         y,
-//     })
-// }
- 
-// Composable usage
-usePinch(pinchHandler, {
-    domTarget: demo2,
-    eventOptions: {
-        passive: true,
-    },
-})
-// useDrag(dragHandler, {
-//     domTarget: dragGo,
-// })
+import { ref } from 'vue';
+import PinchScrollZoom from '@coddicat/vue-pinch-scroll-zoom';
+
+// Create a reference for the PinchScrollZoom component
+const zoomer = ref(null);
+
+// Define the scale variable
+const scale = ref(2);
+
+// Define the scaling handler method
+const scalingHandler = (e) => {
+  console.log(e);
+};
+
+// Define the reset function
+const reset = () => {
+  if (zoomer.value) {
+    zoomer.value.setData({
+      scale: 1,
+      originX: 0,
+      originY: 0,
+      translateX: 0,
+      translateY: 0        
+    });
+  }
+};
 </script>
+
+<style>
+#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>

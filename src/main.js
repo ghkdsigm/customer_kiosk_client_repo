@@ -8,6 +8,8 @@ import './registerServiceWorker'
 import { GesturePlugin } from '@vueuse/gesture'
 import { MotionPlugin } from '@vueuse/motion'
 const pinia = createPinia()
+
+
  
 createApp(App).use(pinia).use(router).use(store).use(GesturePlugin).use(MotionPlugin).mount('#app')
  
