@@ -137,13 +137,13 @@ setup() {
     const imageSrc = ref('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ6nHAV7qhVnIUZ440C2-q0l1DsnmDP-TPAg&s');
     
     const container = ref(null);
-    const zoomableArea = ref(null);
-    const zoomableAreaStyle = ref({
+    const zoomableElement = ref(null);
+    const zoomableStyle = ref({
       transform: 'scale(1) translate(0px, 0px)',
       transformOrigin: 'center center',
     });
 
-    let startDistance = 0;
+    let initialDistance = 0;
     let currentScale = 1;
     let isPanning = false;
     let panStart = { x: 0, y: 0 };
@@ -160,7 +160,7 @@ setup() {
     // 터치 시작 시 처리
     const onTouchStart = (event) => {
       if (event.touches.length === 2) {
-        startDistance = calculateDistance(event.touches);
+        initialDistance = calculateDistance(event.touches);
         isPanning = false;
       } else if (event.touches.length === 1 && currentScale > 1) {
         isPanning = true;
@@ -177,32 +177,36 @@ setup() {
         event.preventDefault();
 
         const newDistance = calculateDistance(event.touches);
-        const scaleChange = newDistance / startDistance;
-
+        const scaleChange = newDistance / initialDistance;
         currentScale = Math.min(Math.max(currentScale * scaleChange, 1), 4); // 최소 1배, 최대 4배 확대/축소
-        zoomableAreaStyle.value.transform = `scale(${currentScale}) translate(${panPosition.x}px, ${panPosition.y}px)`;
 
-        startDistance = newDistance;
+        zoomableStyle.value.transform = `scale(${currentScale}) translate(${panPosition.x}px, ${panPosition.y}px)`;
+
+        initialDistance = newDistance;
       } else if (isPanning && event.touches.length === 1) {
         event.preventDefault();
 
         const containerRect = container.value.getBoundingClientRect();
-        const zoomableAreaRect = zoomableArea.value.getBoundingClientRect();
+        const zoomableRect = zoomableElement.value.getBoundingClientRect();
 
-        const scaledWidth = zoomableAreaRect.width * currentScale;
-        const scaledHeight = zoomableAreaRect.height * currentScale;
+        const newX = event.touches[0].clientX - panStart.x;
+        const newY = event.touches[0].clientY - panStart.y;
+
+        const scaledWidth = zoomableRect.width * currentScale;
+        const scaledHeight = zoomableRect.height * currentScale;
 
         // 이동 가능한 범위를 계산하여 경계 내에 위치하도록 제한
-        const maxX = 0;  // 오른쪽 최대 이동값
-        const maxY = 0;  // 아래쪽 최대 이동값
-        const minX = Math.min(containerRect.width - scaledWidth, 0);  // 왼쪽 최대 이동값
-        const minY = Math.min(containerRect.height - scaledHeight, 0); // 위쪽 최대 이동값
+        const maxX = Math.min(containerRect.width - scaledWidth, 0);
+        const maxY = Math.min(containerRect.height - scaledHeight, 0);
+        const minX = Math.max(containerRect.width - scaledWidth, 0);
+        const minY = Math.max(containerRect.height - scaledHeight, 0);
 
-        // 좌우 및 상하 이동 범위 계산
-        panPosition.x = Math.min(Math.max(event.touches[0].clientX - panStart.x, minX), maxX);
-        panPosition.y = Math.min(Math.max(event.touches[0].clientY - panStart.y, minY), maxY);
+        panPosition = {
+          x: Math.min(Math.max(newX, minX), maxX),
+          y: Math.min(Math.max(newY, minY), maxY),
+        };
 
-        zoomableAreaStyle.value.transform = `scale(${currentScale}) translate(${panPosition.x}px, ${panPosition.y}px)`;
+        zoomableStyle.value.transform = `scale(${currentScale}) translate(${panPosition.x}px, ${panPosition.y}px)`;
       }
     };
 
@@ -212,7 +216,7 @@ setup() {
 
       if (currentScale < 1) {
         currentScale = 1;
-        zoomableAreaStyle.value.transform = `scale(1) translate(0px, 0px)`;
+        zoomableStyle.value.transform = `scale(1) translate(0px, 0px)`;
         panPosition = { x: 0, y: 0 };
       }
     };
@@ -221,13 +225,11 @@ setup() {
       titleEN,
       floorTitle,
       imageSrc,
+      zoomableElement,
+      zoomableStyle,
       onTouchStart,
       onTouchMove,
       onTouchEnd,
-      container,
-      zoomableArea,
-      zoomableAreaStyle,
-      calculateDistance,
     
     };
   }
