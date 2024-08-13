@@ -32,32 +32,25 @@
 
     <!-- 핀치줌 영역 -->
      <div
-      class="overflow-hidden relative w-full h-[40vh]"
-      ref="container"
-      @touchstart="onTouchStart"
-      @touchmove="onTouchMove"
-      @touchend="onTouchEnd"
+    ref="container"
+    class="relative w-full h-[400px] overflow-hidden bg-gray-100"
+    @touchstart="onTouchStart"
+    @touchmove="onTouchMove"
+    @touchend="onTouchEnd"
+  >
+    <div
+      ref="zoomableElement"
+      :style="zoomableStyle"
+      class="absolute top-0 left-0 w-full h-full bg-gray-300"
     >
-      <div
-        ref="zoomableArea"
-        :style="zoomableAreaStyle"
-        class="absolute top-0 left-0 w-full h-full bg-gray-400"
-      >
-        <!-- 여기에 이미지 및 absolute 요소들을 추가하세요 -->
-        <img
-          :src="imageSrc"
-          alt="Zoomable"
-          class="w-full h-auto"
-        />
-        <div
-          class="absolute bg-red-500 text-white"
-          style="top: 20%; left: 30%; width: 100px; height: 100px;"
-        >
-          Some overlay
-        </div>
-        <!-- 추가적인 absolute 요소들을 여기에 추가 -->
-      </div>
+      <!-- 여기에 핀치 줌할 콘텐츠를 추가하세요 -->
+      <img
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ6nHAV7qhVnIUZ440C2-q0l1DsnmDP-TPAg&s"
+        alt="Zoomable"
+        class="w-full h-auto"
+      />
     </div>
+  </div>
     <!-- //핀치줌 영역 -->
 
 		<div class="facility">
@@ -137,19 +130,19 @@ setup() {
     const imageSrc = ref('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ6nHAV7qhVnIUZ440C2-q0l1DsnmDP-TPAg&s');
     
     const container = ref(null);
-    const zoomableArea = ref(null);
-    const zoomableAreaStyle = ref({
+    const zoomableElement = ref(null);
+    const zoomableStyle = ref({
       transform: 'scale(1) translate(0px, 0px)',
-      transformOrigin: 'center center',
+      transformOrigin: '0% 0%', // 기본 transform origin
     });
 
-    let startDistance = 0;
+    let initialDistance = 0;
     let currentScale = 1;
     let isPanning = false;
     let panStart = { x: 0, y: 0 };
     let panPosition = { x: 0, y: 0 };
+    let pinchCenter = { x: 0, y: 0 }; // 핀치 중심
 
-    // 두 손가락 간의 거리 계산
     const calculateDistance = (touches) => {
       const [touch1, touch2] = touches;
       const dx = touch1.clientX - touch2.clientX;
@@ -157,10 +150,18 @@ setup() {
       return Math.sqrt(dx * dx + dy * dy);
     };
 
-    // 터치 시작 시 처리
+    const getTouchCenter = (touches) => {
+      const [touch1, touch2] = touches;
+      return {
+        x: (touch1.clientX + touch2.clientX) / 2,
+        y: (touch1.clientY + touch2.clientY) / 2,
+      };
+    };
+
     const onTouchStart = (event) => {
       if (event.touches.length === 2) {
-        startDistance = calculateDistance(event.touches);
+        initialDistance = calculateDistance(event.touches);
+        pinchCenter = getTouchCenter(event.touches);
         isPanning = false;
       } else if (event.touches.length === 1 && currentScale > 1) {
         isPanning = true;
@@ -171,48 +172,59 @@ setup() {
       }
     };
 
-    // 터치 이동 시 처리
     const onTouchMove = (event) => {
       if (event.touches.length === 2) {
         event.preventDefault();
 
         const newDistance = calculateDistance(event.touches);
-        const scaleChange = newDistance / startDistance;
-
+        const scaleChange = newDistance / initialDistance;
         currentScale = Math.min(Math.max(currentScale * scaleChange, 1), 4); // 최소 1배, 최대 4배 확대/축소
-        zoomableAreaStyle.value.transform = `scale(${currentScale}) translate(${panPosition.x}px, ${panPosition.y}px)`;
 
-        startDistance = newDistance;
+        // 핀치 중심을 container의 비율에 맞게 계산
+        const containerRect = container.value.getBoundingClientRect();
+        const newPinchCenter = getTouchCenter(event.touches);
+
+        const centerX = (newPinchCenter.x - containerRect.left) / containerRect.width;
+        const centerY = (newPinchCenter.y - containerRect.top) / containerRect.height;
+        zoomableStyle.value.transformOrigin = `${centerX * 100}% ${centerY * 100}%`;
+
+        zoomableStyle.value.transform = `scale(${currentScale}) translate(${panPosition.x}px, ${panPosition.y}px)`;
+
+        initialDistance = newDistance;
+        pinchCenter = newPinchCenter;
       } else if (isPanning && event.touches.length === 1) {
         event.preventDefault();
 
         const containerRect = container.value.getBoundingClientRect();
-        const zoomableAreaRect = zoomableArea.value.getBoundingClientRect();
+        const zoomableRect = zoomableElement.value.getBoundingClientRect();
 
-        const scaledWidth = zoomableAreaRect.width * currentScale;
-        const scaledHeight = zoomableAreaRect.height * currentScale;
+        const newX = event.touches[0].clientX - panStart.x;
+        const newY = event.touches[0].clientY - panStart.y;
+
+        const scaledWidth = zoomableRect.width * currentScale;
+        const scaledHeight = zoomableRect.height * currentScale;
 
         // 이동 가능한 범위를 계산하여 경계 내에 위치하도록 제한
-        const maxX = 0;  // 오른쪽 최대 이동값
-        const maxY = 0;  // 아래쪽 최대 이동값
-        const minX = Math.min(containerRect.width - scaledWidth, 0);  // 왼쪽 최대 이동값
-        const minY = Math.min(containerRect.height - scaledHeight, 0); // 위쪽 최대 이동값
+        const maxX = Math.min(containerRect.width - scaledWidth, 0);
+        const maxY = Math.min(containerRect.height - scaledHeight, 0);
+        const minX = Math.max(containerRect.width - scaledWidth, 0);
+        const minY = Math.max(containerRect.height - scaledHeight, 0);
 
-        // 좌우 및 상하 이동 범위 계산
-        panPosition.x = Math.min(Math.max(event.touches[0].clientX - panStart.x, minX), maxX);
-        panPosition.y = Math.min(Math.max(event.touches[0].clientY - panStart.y, minY), maxY);
+        panPosition = {
+          x: Math.min(Math.max(newX, minX), maxX),
+          y: Math.min(Math.max(newY, minY), maxY),
+        };
 
-        zoomableAreaStyle.value.transform = `scale(${currentScale}) translate(${panPosition.x}px, ${panPosition.y}px)`;
+        zoomableStyle.value.transform = `scale(${currentScale}) translate(${panPosition.x}px, ${panPosition.y}px)`;
       }
     };
 
-    // 터치 종료 시 처리
     const onTouchEnd = () => {
       isPanning = false;
 
       if (currentScale < 1) {
         currentScale = 1;
-        zoomableAreaStyle.value.transform = `scale(1) translate(0px, 0px)`;
+        zoomableStyle.value.transform = `scale(1) translate(0px, 0px)`;
         panPosition = { x: 0, y: 0 };
       }
     };
@@ -221,13 +233,12 @@ setup() {
       titleEN,
       floorTitle,
       imageSrc,
+      zoomableElement,
+      zoomableStyle,
       onTouchStart,
       onTouchMove,
       onTouchEnd,
-      container,
-      zoomableArea,
-      zoomableAreaStyle,
-      calculateDistance,
+
     
     };
   }
