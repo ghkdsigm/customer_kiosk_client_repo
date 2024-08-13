@@ -12,6 +12,7 @@
     "@vue/cli-plugin-pwa": "^5.0.8",
     "@vueuse/core": "^10.11.1",
     "@vueuse/gesture": "^2.0.0",
+    "@vueuse/motion": "^2.2.3",
     "axios": "^0.27.2",
     "hangul-js": "^0.2.6",
     "pinia": "^2.1.7",
