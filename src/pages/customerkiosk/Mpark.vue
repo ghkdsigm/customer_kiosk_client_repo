@@ -40,7 +40,6 @@
     >
       <div
         ref="zoomableArea"
-        :style="zoomableAreaStyle"
         class="absolute top-0 left-0 w-full h-full bg-gray-400"
       >
         <!-- 여기에 이미지 및 absolute 요소들을 추가하세요 -->
