@@ -1,5 +1,5 @@
 <template>
-  <div class="relative h-[67vh]">
+  <div>
 		<div class="position_info">
 			<div class="flex items-end mb-[40px]">
 				<h1 class="mr-[36px] mainTit">{{ floorTitle }}</h1>
@@ -30,34 +30,21 @@
 			</ul>
 		</div>
 
-    <!-- 핀치줌 영역 -->
-     <div
-      class="overflow-hidden relative w-full h-[40vh]"
-      ref="container"
+    <div
+      class="overflow-hidden touch-none relative"
+      ref="zoomContainer"
       @touchstart="onTouchStart"
       @touchmove="onTouchMove"
       @touchend="onTouchEnd"
     >
-      <div
-        ref="zoomableArea"
-        class="absolute top-0 left-0 w-full h-full bg-gray-400"
-      >
-        <!-- 여기에 이미지 및 absolute 요소들을 추가하세요 -->
-        <img
-          :src="imageSrc"
-          alt="Zoomable"
-          class="w-full h-auto"
-        />
-        <div
-          class="absolute bg-red-500 text-white"
-          style="top: 20%; left: 30%; width: 100px; height: 100px;"
-        >
-          Some overlay
-        </div>
-        <!-- 추가적인 absolute 요소들을 여기에 추가 -->
-      </div>
+      <!-- <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ6nHAV7qhVnIUZ440C2-q0l1DsnmDP-TPAg&s" alt="" class="w-full h-[54vh]"> -->
+      <img
+        :src="imageSrc"
+        alt="Zoomable"
+        :style="imageStyle"
+        class="w-full h-[54vh]"
+      />
     </div>
-    <!-- //핀치줌 영역 -->
 
 		<div class="facility">
 			<div class="inner">
@@ -135,19 +122,19 @@ setup() {
     const floorTitle = computed(() => mparkStore.floorTitle)
     const imageSrc = ref('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ6nHAV7qhVnIUZ440C2-q0l1DsnmDP-TPAg&s');
     
-    const container = ref(null);
-    const zoomableElement = ref(null);
-    const zoomableStyle = ref({
-      transform: 'scale(1) translate(0px, 0px)',
-      transformOrigin: '0% 0%', // 기본 transform origin
+    const zoomContainer = ref(null);
+    const imageStyle = ref({
+      transform: 'scale(1)',
+      transformOrigin: 'center center',
+      top: '0px',
+      left: '0px',
     });
 
-    let initialDistance = 0;
+    let startDistance = 0;
     let currentScale = 1;
     let isPanning = false;
     let panStart = { x: 0, y: 0 };
     let panPosition = { x: 0, y: 0 };
-    let pinchCenter = { x: 0, y: 0 }; // 핀치 중심
 
     const calculateDistance = (touches) => {
       const [touch1, touch2] = touches;
@@ -158,11 +145,7 @@ setup() {
 
     const onTouchStart = (event) => {
       if (event.touches.length === 2) {
-        initialDistance = calculateDistance(event.touches);
-        pinchCenter = {
-          x: (event.touches[0].clientX + event.touches[1].clientX) / 2,
-          y: (event.touches[0].clientY + event.touches[1].clientY) / 2
-        };
+        startDistance = calculateDistance(event.touches);
         isPanning = false;
       } else if (event.touches.length === 1 && currentScale > 1) {
         isPanning = true;
@@ -178,48 +161,25 @@ setup() {
         event.preventDefault();
 
         const newDistance = calculateDistance(event.touches);
-        const scaleChange = newDistance / initialDistance;
+        const scaleChange = newDistance / startDistance;
+
         currentScale = Math.min(Math.max(currentScale * scaleChange, 1), 4); // 최소 1배, 최대 4배 확대/축소
+        imageStyle.value.transform = `scale(${currentScale})`;
 
-        const containerRect = container.value.getBoundingClientRect();
-        const scaleTransform = `scale(${currentScale})`;
-        
-        // 핀치 중심을 container의 비율에 맞게 계산
-        const centerX = (pinchCenter.x - containerRect.left) / containerRect.width;
-        const centerY = (pinchCenter.y - containerRect.top) / containerRect.height;
-        zoomableStyle.value.transformOrigin = `${centerX * 100}% ${centerY * 100}%`;
-
-        zoomableStyle.value.transform = `${scaleTransform} translate(${panPosition.x}px, ${panPosition.y}px)`;
-
-        initialDistance = newDistance;
-        pinchCenter = {
-          x: (event.touches[0].clientX + event.touches[1].clientX) / 2,
-          y: (event.touches[0].clientY + event.touches[1].clientY) / 2
-        };
+        startDistance = newDistance;
       } else if (isPanning && event.touches.length === 1) {
         event.preventDefault();
-
-        const containerRect = container.value.getBoundingClientRect();
-        const zoomableRect = zoomableElement.value.getBoundingClientRect();
 
         const newX = event.touches[0].clientX - panStart.x;
         const newY = event.touches[0].clientY - panStart.y;
 
-        const scaledWidth = zoomableRect.width * currentScale;
-        const scaledHeight = zoomableRect.height * currentScale;
-
-        // 이동 가능한 범위를 계산하여 경계 내에 위치하도록 제한
-        const maxX = Math.min(containerRect.width - scaledWidth, 0);
-        const maxY = Math.min(containerRect.height - scaledHeight, 0);
-        const minX = Math.max(containerRect.width - scaledWidth, 0);
-        const minY = Math.max(containerRect.height - scaledHeight, 0);
-
         panPosition = {
-          x: Math.min(Math.max(newX, minX), maxX),
-          y: Math.min(Math.max(newY, minY), maxY),
+          x: newX,
+          y: newY,
         };
 
-        zoomableStyle.value.transform = `scale(${currentScale}) translate(${panPosition.x}px, ${panPosition.y}px)`;
+        imageStyle.value.left = `${panPosition.x}px`;
+        imageStyle.value.top = `${panPosition.y}px`;
       }
     };
 
@@ -228,8 +188,9 @@ setup() {
 
       if (currentScale < 1) {
         currentScale = 1;
-        zoomableStyle.value.transform = `scale(1) translate(0px, 0px)`;
-        panPosition = { x: 0, y: 0 };
+        imageStyle.value.transform = `scale(1)`;
+        imageStyle.value.left = '0px';
+        imageStyle.value.top = '0px';
       }
     };
 
@@ -237,14 +198,11 @@ setup() {
       titleEN,
       floorTitle,
       imageSrc,
-      container,
-      zoomableElement,
-      zoomableStyle,
+      imageStyle,
+      zoomContainer,
       onTouchStart,
       onTouchMove,
-      onTouchEnd,
-
-    
+      onTouchEnd
     };
   }
 });
