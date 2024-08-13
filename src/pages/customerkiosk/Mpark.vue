@@ -65,8 +65,8 @@
 <script>
 import { ref, computed } from 'vue';
 import { useTitleEN } from '@/composables/useTitleEN';
-import { useMparkStore } from '@/store/mpark'
-import { useGesture } from '@vueuse/gesture';
+import { useMparkStore } from '@/store/mpark';
+import { usePinch } from '@vueuse/gesture';
 
 export default {
   name: 'PageMpark',
@@ -86,7 +86,7 @@ export default {
     let currentScale = 1;
     let panPosition = { x: 0, y: 0 };
 
-    useGesture(container, {
+    const { pinch } = usePinch(container, {
       onPinch: ({ offset: [scale], memo }) => {
         if (!memo) memo = currentScale;
 
@@ -96,16 +96,14 @@ export default {
         zoomableStyle.value.transform = `scale(${currentScale}) translate(${panPosition.x}px, ${panPosition.y}px)`;
         return memo;
       },
-      onDrag: ({ movement: [mx, my], memo }) => {
-        if (!memo) memo = { ...panPosition };
+    });
 
-        panPosition = {
-          x: memo.x + mx,
-          y: memo.y + my,
-        };
-
-        zoomableStyle.value.transform = `scale(${currentScale}) translate(${panPosition.x}px, ${panPosition.y}px)`;
-        return memo;
+    usePinch(container, {
+      onPinchStart: () => {
+        panPosition = { x: 0, y: 0 }; // 초기화
+      },
+      onPinchEnd: () => {
+        // 핀치가 끝났을 때 추가적인 작업이 필요하면 여기에 작성
       },
     });
 
@@ -127,7 +125,8 @@ export default {
       imageSrc,
       zoomableElement,
       zoomableStyle,
-      facilities
+      facilities,
+      pinch
     };
   }
 };
