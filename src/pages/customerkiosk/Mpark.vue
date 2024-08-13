@@ -1,3 +1,71 @@
+<template>
+  <div class="relative h-[67vh]">
+    <div class="position_info">
+      <div class="flex items-end mb-[40px]">
+        <h1 class="mr-[36px] mainTit">{{ floorTitle }}</h1>
+        <span class="position">자동차 매매 전시장1</span>
+      </div>
+
+      <ul class="flex list_item">
+        <li>
+          <span class="color c1"></span>
+          <span class="name">매매상사</span>
+        </li>
+        <li>
+          <span class="color c2"></span>
+          <span class="name">지원시설</span>
+        </li>
+        <li>
+          <span class="color c3"></span>
+          <span class="name">음식점</span>
+        </li>
+        <li>
+          <span class="color c4"></span>
+          <span class="name">정비/세차/광택</span>
+        </li>
+        <li>
+          <span class="color c5"></span>
+          <span class="name">기타</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 핀치줌 영역 -->
+    <div
+      ref="container"
+      class="relative w-full h-[400px] overflow-hidden bg-gray-100"
+      @touchstart="onTouchStart"
+      @click="onTouchStart"
+      @touchmove="onTouchMove"
+      @touchend="onTouchEnd"
+    >
+      <div
+        ref="zoomableElement"
+        :style="zoomableStyle"
+        class="absolute top-0 left-0 w-full h-full"
+      >
+        <img
+          :src="imageSrc"
+          alt="Zoomable"
+          class="w-full h-auto"
+        />
+      </div>
+    </div>
+    <!-- //핀치줌 영역 -->
+
+    <div class="facility">
+      <div class="inner">
+        <div v-for="(item, index) in facilities" :key="index" class="mx-6 hover:cursor-pointer btn_item">
+          <div class="mb-[8px] icon">
+            <img :src="item.icon" :alt="item.name" class="w-fit" />
+          </div>
+          <p class="name">{{ item.name }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
 <script>
 import { ref, computed } from 'vue';
 import { useTitleEN } from '@/composables/useTitleEN';
@@ -110,6 +178,18 @@ export default {
       }
     };
 
+    // 시설 데이터
+    const facilities = ref([
+      { name: '엘레베이터', icon: '@/assets/img/facility/icon_1.svg' },
+      { name: '화장실', icon: '@/assets/img/facility/icon_2.svg' },
+      { name: '장애인화장실', icon: '@/assets/img/facility/icon_3.svg' },
+      { name: '은행/ATM', icon: '@/assets/img/facility/icon_4.svg' },
+      { name: '업무지원센터', icon: '@/assets/img/facility/icon_5.svg' },
+      { name: '비상구', icon: '@/assets/img/facility/icon_6.svg' },
+      { name: '고객주차장', icon: '@/assets/img/facility/icon_7.svg' },
+      { name: '무인정산기', icon: '@/assets/img/facility/icon_8.svg' },
+    ]);
+
     return {
       titleEN,
       floorTitle,
@@ -118,12 +198,12 @@ export default {
       zoomableStyle,
       onTouchStart,
       onTouchMove,
-      onTouchEnd
+      onTouchEnd,
+      facilities
     };
   }
 };
 </script>
-
 
 <style lang="scss" scoped>
 .position_info {
