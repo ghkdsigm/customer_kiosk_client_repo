@@ -36,7 +36,7 @@ onMounted(() => {
 
 <style>
 .demobox {
-  background: red;
+  background: gray;
   width: 100%;
   height: 400px; /* Adjust as needed */
   overflow: hidden;
