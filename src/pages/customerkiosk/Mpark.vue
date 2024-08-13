@@ -140,7 +140,7 @@ setup() {
     const zoomableElement = ref(null);
     const zoomableStyle = ref({
       transform: 'scale(1) translate(0px, 0px)',
-      transformOrigin: 'center center',
+      transformOrigin: '0% 0%', // 기본 transform origin
     });
 
     let initialDistance = 0;
@@ -148,8 +148,8 @@ setup() {
     let isPanning = false;
     let panStart = { x: 0, y: 0 };
     let panPosition = { x: 0, y: 0 };
+    let pinchCenter = { x: 0, y: 0 }; // 핀치 중심
 
-    // 두 손가락 간의 거리 계산
     const calculateDistance = (touches) => {
       const [touch1, touch2] = touches;
       const dx = touch1.clientX - touch2.clientX;
@@ -157,10 +157,13 @@ setup() {
       return Math.sqrt(dx * dx + dy * dy);
     };
 
-    // 터치 시작 시 처리
     const onTouchStart = (event) => {
       if (event.touches.length === 2) {
         initialDistance = calculateDistance(event.touches);
+        pinchCenter = {
+          x: (event.touches[0].clientX + event.touches[1].clientX) / 2,
+          y: (event.touches[0].clientY + event.touches[1].clientY) / 2
+        };
         isPanning = false;
       } else if (event.touches.length === 1 && currentScale > 1) {
         isPanning = true;
@@ -171,7 +174,6 @@ setup() {
       }
     };
 
-    // 터치 이동 시 처리
     const onTouchMove = (event) => {
       if (event.touches.length === 2) {
         event.preventDefault();
@@ -180,9 +182,21 @@ setup() {
         const scaleChange = newDistance / initialDistance;
         currentScale = Math.min(Math.max(currentScale * scaleChange, 1), 4); // 최소 1배, 최대 4배 확대/축소
 
-        zoomableStyle.value.transform = `scale(${currentScale}) translate(${panPosition.x}px, ${panPosition.y}px)`;
+        const containerRect = container.value.getBoundingClientRect();
+        const scaleTransform = `scale(${currentScale})`;
+        
+        // 핀치 중심을 container의 비율에 맞게 계산
+        const centerX = (pinchCenter.x - containerRect.left) / containerRect.width;
+        const centerY = (pinchCenter.y - containerRect.top) / containerRect.height;
+        zoomableStyle.value.transformOrigin = `${centerX * 100}% ${centerY * 100}%`;
+
+        zoomableStyle.value.transform = `${scaleTransform} translate(${panPosition.x}px, ${panPosition.y}px)`;
 
         initialDistance = newDistance;
+        pinchCenter = {
+          x: (event.touches[0].clientX + event.touches[1].clientX) / 2,
+          y: (event.touches[0].clientY + event.touches[1].clientY) / 2
+        };
       } else if (isPanning && event.touches.length === 1) {
         event.preventDefault();
 
@@ -210,7 +224,6 @@ setup() {
       }
     };
 
-    // 터치 종료 시 처리
     const onTouchEnd = () => {
       isPanning = false;
 
@@ -225,11 +238,13 @@ setup() {
       titleEN,
       floorTitle,
       imageSrc,
+      container,
       zoomableElement,
       zoomableStyle,
       onTouchStart,
       onTouchMove,
       onTouchEnd,
+
     
     };
   }
