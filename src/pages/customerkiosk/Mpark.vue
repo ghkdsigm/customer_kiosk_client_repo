@@ -24,7 +24,7 @@ const pinchHandler = ({ offset: [scale, angle] }) => {
 // Use `usePinch` with the correct target
 onMounted(() => {
   const p = usePinch(pinchHandler, {
-    domTarget: rootNode,
+    domTarget: demoBox.value,
     eventOptions: {
       passive: false
     },
