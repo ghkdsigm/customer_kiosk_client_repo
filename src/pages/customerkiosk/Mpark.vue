@@ -41,8 +41,8 @@ onMounted(() => {
 }
 
 .pinchable {
-  width: 100%;
-  height: 100%;
-  background: white; /* Content color */
+  width: 100px;
+  height: 100px;
+  background: green; /* Content color */
 }
 </style>
