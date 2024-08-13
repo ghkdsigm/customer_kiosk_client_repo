@@ -137,84 +137,84 @@ setup() {
     const imageSrc = ref('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ6nHAV7qhVnIUZ440C2-q0l1DsnmDP-TPAg&s');
     
     const container = ref(null);
-const zoomableArea = ref(null);
-const zoomableAreaStyle = ref({
-  transform: 'scale(1) translate(0px, 0px)',
-  transformOrigin: 'center center',
-});
+    const zoomableArea = ref(null);
+    const zoomableAreaStyle = ref({
+      transform: 'scale(1) translate(0px, 0px)',
+      transformOrigin: 'center center',
+    });
 
-let startDistance = 0;
-let currentScale = 1;
-let isPanning = false;
-let panStart = { x: 0, y: 0 };
-let panPosition = { x: 0, y: 0 };
+    let startDistance = 0;
+    let currentScale = 1;
+    let isPanning = false;
+    let panStart = { x: 0, y: 0 };
+    let panPosition = { x: 0, y: 0 };
 
-const calculateDistance = (touches) => {
-  const [touch1, touch2] = touches;
-  const dx = touch1.clientX - touch2.clientX;
-  const dy = touch1.clientY - touch2.clientY;
-  return Math.sqrt(dx * dx + dy * dy);
-};
-
-const onTouchStart = (event) => {
-  if (event.touches.length === 2) {
-    startDistance = calculateDistance(event.touches);
-    isPanning = false;
-  } else if (event.touches.length === 1 && currentScale > 1) {
-    isPanning = true;
-    panStart = {
-      x: event.touches[0].clientX - panPosition.x,
-      y: event.touches[0].clientY - panPosition.y,
-    };
-  }
-};
-
-const onTouchMove = (event) => {
-  if (event.touches.length === 2) {
-    event.preventDefault();
-
-    const newDistance = calculateDistance(event.touches);
-    const scaleChange = newDistance / startDistance;
-
-    currentScale = Math.min(Math.max(currentScale * scaleChange, 1), 4); // 최소 1배, 최대 4배 확대/축소
-    zoomableAreaStyle.value.transform = `scale(${currentScale}) translate(${panPosition.x}px, ${panPosition.y}px)`;
-
-    startDistance = newDistance;
-  } else if (isPanning && event.touches.length === 1) {
-    event.preventDefault();
-
-    const containerRect = container.value.getBoundingClientRect();
-    const zoomableAreaRect = zoomableArea.value.getBoundingClientRect();
-
-    const newX = event.touches[0].clientX - panStart.x;
-    const newY = event.touches[0].clientY - panStart.y;
-
-    const scaledWidth = zoomableAreaRect.width * currentScale;
-    const scaledHeight = zoomableAreaRect.height * currentScale;
-
-    // 이동 가능한 범위를 계산하여 경계 내에 위치하도록 제한
-    const maxX = Math.max(containerRect.width - scaledWidth, 0);
-    const maxY = Math.max(containerRect.height - scaledHeight, 0);
-    const minX = Math.min(0, containerRect.width - scaledWidth);
-    const minY = Math.min(0, containerRect.height - scaledHeight);
-
-    panPosition = {
-      x: Math.min(Math.max(newX, minX), maxX),
-      y: Math.min(Math.max(newY, minY), maxY),
+    const calculateDistance = (touches) => {
+      const [touch1, touch2] = touches;
+      const dx = touch1.clientX - touch2.clientX;
+      const dy = touch1.clientY - touch2.clientY;
+      return Math.sqrt(dx * dx + dy * dy);
     };
 
-    zoomableAreaStyle.value.transform = `scale(${currentScale}) translate(${panPosition.x}px, ${panPosition.y}px)`;
-  }
-};
+    const onTouchStart = (event) => {
+      if (event.touches.length === 2) {
+        startDistance = calculateDistance(event.touches);
+        isPanning = false;
+      } else if (event.touches.length === 1 && currentScale > 1) {
+        isPanning = true;
+        panStart = {
+          x: event.touches[0].clientX - panPosition.x,
+          y: event.touches[0].clientY - panPosition.y,
+        };
+      }
+    };
 
-const onTouchEnd = () => {
-  isPanning = false;
+    const onTouchMove = (event) => {
+      if (event.touches.length === 2) {
+        event.preventDefault();
 
-  if (currentScale < 1) {
-    currentScale = 1;
-    zoomableAreaStyle.value.transform = `scale(1) translate(0px, 0px)`;
-  }
-};
+        const newDistance = calculateDistance(event.touches);
+        const scaleChange = newDistance / startDistance;
+
+        currentScale = Math.min(Math.max(currentScale * scaleChange, 1), 4); // 최소 1배, 최대 4배 확대/축소
+        zoomableAreaStyle.value.transform = `scale(${currentScale}) translate(${panPosition.x}px, ${panPosition.y}px)`;
+
+        startDistance = newDistance;
+      } else if (isPanning && event.touches.length === 1) {
+        event.preventDefault();
+
+        const containerRect = container.value.getBoundingClientRect();
+        const zoomableAreaRect = zoomableArea.value.getBoundingClientRect();
+
+        const newX = event.touches[0].clientX - panStart.x;
+        const newY = event.touches[0].clientY - panStart.y;
+
+        const scaledWidth = zoomableAreaRect.width * currentScale;
+        const scaledHeight = zoomableAreaRect.height * currentScale;
+
+        // 이동 가능한 범위를 계산하여 경계 내에 위치하도록 제한
+        const maxX = Math.max(containerRect.width - scaledWidth, 0);
+        const maxY = Math.max(containerRect.height - scaledHeight, 0);
+        const minX = Math.min(0, containerRect.width - scaledWidth);
+        const minY = Math.min(0, containerRect.height - scaledHeight);
+
+        panPosition = {
+          x: Math.min(Math.max(newX, minX), maxX),
+          y: Math.min(Math.max(newY, minY), maxY),
+        };
+
+        zoomableAreaStyle.value.transform = `scale(${currentScale}) translate(${panPosition.x}px, ${panPosition.y}px)`;
+      }
+    };
+
+    const onTouchEnd = () => {
+      isPanning = false;
+
+      if (currentScale < 1) {
+        currentScale = 1;
+        zoomableAreaStyle.value.transform = `scale(1) translate(0px, 0px)`;
+      }
+    };
 
     return {
       titleEN,
@@ -226,7 +226,8 @@ const onTouchEnd = () => {
       container,
       zoomableArea,
       zoomableAreaStyle,
-      calculateDistance,      
+      calculateDistance,
+    
     };
   }
 });
