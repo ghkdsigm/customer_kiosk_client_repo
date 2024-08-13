@@ -6,7 +6,7 @@
       :height="400"
       :scale="scale"
       @scaling="scalingHandler"
-      style="border: 1px solid black"
+      style="border: 1px solid black;    overflow: hidden;"
     >
       <img src="https://picsum.photos/600/1000" width="300" height="400" />
     </PinchScrollZoom>
@@ -16,7 +16,7 @@
       :height="400"
       :scale="scale"
       @scaling="scalingHandler"
-      style="border: 1px solid black"
+      style="border: 1px solid black;overflow: hidden;"
     >
       <img src="https://picsum.photos/600/1000" width="300" height="400" />
     </PinchScrollZoom>
