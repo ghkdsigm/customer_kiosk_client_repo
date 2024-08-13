@@ -149,6 +149,7 @@ setup() {
     let panStart = { x: 0, y: 0 };
     let panPosition = { x: 0, y: 0 };
 
+    // 두 손가락 간의 거리 계산
     const calculateDistance = (touches) => {
       const [touch1, touch2] = touches;
       const dx = touch1.clientX - touch2.clientX;
@@ -156,6 +157,7 @@ setup() {
       return Math.sqrt(dx * dx + dy * dy);
     };
 
+    // 터치 시작 시 처리
     const onTouchStart = (event) => {
       if (event.touches.length === 2) {
         startDistance = calculateDistance(event.touches);
@@ -169,6 +171,7 @@ setup() {
       }
     };
 
+    // 터치 이동 시 처리
     const onTouchMove = (event) => {
       if (event.touches.length === 2) {
         event.preventDefault();
@@ -186,33 +189,31 @@ setup() {
         const containerRect = container.value.getBoundingClientRect();
         const zoomableAreaRect = zoomableArea.value.getBoundingClientRect();
 
-        const newX = event.touches[0].clientX - panStart.x;
-        const newY = event.touches[0].clientY - panStart.y;
-
         const scaledWidth = zoomableAreaRect.width * currentScale;
         const scaledHeight = zoomableAreaRect.height * currentScale;
 
         // 이동 가능한 범위를 계산하여 경계 내에 위치하도록 제한
-        const maxX = Math.max(containerRect.width - scaledWidth, 0);
-        const maxY = Math.max(containerRect.height - scaledHeight, 0);
-        const minX = Math.min(0, containerRect.width - scaledWidth);
-        const minY = Math.min(0, containerRect.height - scaledHeight);
+        const maxX = 0;  // 오른쪽 최대 이동값
+        const maxY = 0;  // 아래쪽 최대 이동값
+        const minX = Math.min(containerRect.width - scaledWidth, 0);  // 왼쪽 최대 이동값
+        const minY = Math.min(containerRect.height - scaledHeight, 0); // 위쪽 최대 이동값
 
-        panPosition = {
-          x: Math.min(Math.max(newX, minX), maxX),
-          y: Math.min(Math.max(newY, minY), maxY),
-        };
+        // 좌우 및 상하 이동 범위 계산
+        panPosition.x = Math.min(Math.max(event.touches[0].clientX - panStart.x, minX), maxX);
+        panPosition.y = Math.min(Math.max(event.touches[0].clientY - panStart.y, minY), maxY);
 
         zoomableAreaStyle.value.transform = `scale(${currentScale}) translate(${panPosition.x}px, ${panPosition.y}px)`;
       }
     };
 
+    // 터치 종료 시 처리
     const onTouchEnd = () => {
       isPanning = false;
 
       if (currentScale < 1) {
         currentScale = 1;
         zoomableAreaStyle.value.transform = `scale(1) translate(0px, 0px)`;
+        panPosition = { x: 0, y: 0 };
       }
     };
 
