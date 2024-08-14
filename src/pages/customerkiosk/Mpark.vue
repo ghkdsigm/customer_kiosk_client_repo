@@ -1,5 +1,5 @@
 <template>
-  <div class="position_info">
+  <div class="position_info z-10 relative">
     <div class="flex items-end mb-[40px]">
       <h1 class="mr-[36px] mainTit">{{ floorTitle }}</h1>
       <span class="position">자동차 매매 전시장1</span>
@@ -29,24 +29,20 @@
     </ul>
   </div>
   <div
-    class="overflow-hidden relative w-full h-[54vh] border">
+    class="absolute top-0 left-0 right-0 bottom-0 overflow-hidden z-0 m-12 w-[auto] h-[auto]" ref="container">
     <PinchScrollZoom
       ref="zoomer"
-      within
-      :width="1500"
-      :height="500"
-      :content-width="1500"
-      :content-height="500"
+      :width="containerWidth"
+      :height="containerHeight"
       :scale="scale"
       @scaling="scalingHandler"
-      style="overflow: hidden;"
     >
-      <img src="https://img1.daumcdn.net/thumb/R800x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F0Ignd%2FbtsgCkpouTB%2FKK5sC7rKq4RYckg3wXJy2K%2Fimg.png" width="1500" height="500" />
+      <img src="@/assets/img/introduce/hub_1f.png" :style="`width:${containerWidth}; height:${containerHeight}`"style="max-height: 40vh; top:7vw; left: 23vw; position: relative;" />
       <div
         class="absolute bg-red-500 text-white"
-        style="top: 20%; left: 30%; width: 100px; height: 100px;"
+        style="top: 82.5%; left: 48.3%; width: 1.3vw; height: 14px; font-size: 0.3vw; display: flex; align-items: center; justify-content: center;"
       >
-        Some overlay
+        우성상사
       </div>
     </PinchScrollZoom>
     <!-- <PinchScrollZoom
@@ -60,7 +56,7 @@
       <img src="https://picsum.photos/600/1000" width="300" height="400" />
     </PinchScrollZoom> -->
   </div>
-  <div class="facility">
+  <div class="facility z-10">
 			<div class="inner">
 				<div class="mx-6 hover:cursor-pointer btn_item">
 					<div class="mb-[8px] icon">
@@ -122,7 +118,7 @@
 </template>
 
 <script>
-import { defineComponent, computed, ref, watch, onMounted, onUnmounted } from 'vue'
+import { defineComponent, computed, ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { useTitleEN } from '@/composables/useTitleEN'
 import { useMparkStore } from '@/store/mpark'
 import PinchScrollZoom from '@coddicat/vue-pinch-scroll-zoom';
@@ -132,69 +128,63 @@ components:{
   PinchScrollZoom
 },
 setup() {
-		const { titleEN } = useTitleEN()
+    const { titleEN } = useTitleEN()
 		const mparkStore = useMparkStore()
 		const floorTitle = computed(() => mparkStore.floorTitle)
-    // Create a reference for the PinchScrollZoom component
-    const zoomer = ref(null);
-const container = ref(null);
-const containerWidth = ref(300);
 
-    // Define the scale variable
+    const zoomer = ref(null);
+    const container = ref(null);
+    const containerWidth = ref(1500);
+    const containerHeight = ref(500);
+
     const scale = ref(2);
 
-    // Define the scaling handler method
     const scalingHandler = (e) => {
       console.log(e);
     };
 
-
-
-// Function to update container width
-const updateContainerWidth = () => {
-  if (container.value) {
-    containerWidth.value = container.value.offsetWidth;
-  }
-};
-
-
-    // Watch for changes in container width
-watch(() => container.value?.offsetWidth, updateContainerWidth);
-
-// Initial setup
-onMounted(() => {
-  containerWidth.value = 300
-  updateContainerWidth(); // Set initial width
-  window.addEventListener('resize', updateContainerWidth);
-});
-
-// Cleanup on unmount
-onUnmounted(() => {
-  window.removeEventListener('resize', updateContainerWidth);
-});
-
-    // Define the reset function
-    const reset = () => {
-      if (zoomer.value) {
-        zoomer.value.setData({
-          scale: 1,
-          originX: 0,
-          originY: 0,
-          translateX: 0,
-          translateY: 0        
-        });
+    const updateContainerDimensions = () => {
+      if (container.value) {
+        console.log('업데이트 값', container.value.offsetWidth)
+        containerWidth.value = container.value.offsetWidth;
+        containerHeight.value = container.value.offsetHeight;
       }
     };
-		return {
-			titleEN,
+
+    watch(
+      () => [container.value?.offsetWidth, container.value?.offsetHeight],
+      updateContainerDimensions      
+    );
+
+    watch(
+      () => floorTitle.value, async (newval) => {
+        if(newval) {
+          console.log('newval', newval)
+          await nextTick();
+          updateContainerDimensions();
+        }
+      }
+    )
+
+    onMounted(() => {
+      updateContainerDimensions();
+      window.addEventListener('resize', updateContainerDimensions);
+    });
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', updateContainerDimensions);
+    });
+
+    return {
+      titleEN,
 			floorTitle,
       zoomer,
+      container,
+      containerWidth,
+      containerHeight,
       scale,
       scalingHandler,
-      reset,
-      container,
-      updateContainerWidth
-		}
+    };
 	}
 })
 </script>
