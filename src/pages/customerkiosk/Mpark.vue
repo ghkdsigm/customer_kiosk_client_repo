@@ -37,13 +37,30 @@
       :scale="scale"
       @scaling="scalingHandler"
     >
-      <img src="@/assets/img/introduce/hub_1f.png" :style="`width:${containerWidth}; height:${containerHeight}`"style="max-height: 40vh; top:7vw; left: 23vw; position: relative;" />
-      <div
+      <img src="@/assets/img/introduce/hub_1f.png" :style="{width: containerWidth,height: containerHeight,left: checkMapFold ? '20.85vw' : '22vw'}" style="max-height: 40vh; top: 7vw; position: relative;"/>
+      <!-- <div
         class="absolute bg-red-500 text-white"
-        style="top: 82.5%; left: 48.3%; width: 1.3vw; height: 14px; font-size: 0.3vw; display: flex; align-items: center; justify-content: center;"
+        style="top: 82.5%; left: 40.25vw; width: 1.3vw; height: 14px; font-size: 0.3vw; display: flex; align-items: center; justify-content: center;"
+        :style="{left: checkMapFold ? '39.1vw' : '40.25vw'}"
       >
         우성상사
-      </div>
+      </div> -->
+      <div 
+      v-for="(item, idx) in stores" 
+        :key="idx" 
+        class="absolute font-normal leading-none text-center storeItem" 
+        :class="{ 'active': selectedStore && selectedStore.id === item.id }"
+        style="font-size: 0.2vw; display: flex; align-items: center; justify-content: center;" 
+        :style="{ 
+          top: `${item.top}vw`, 
+          left: checkMapFold ? `${item.left - 1.15}vw` : `${item.left}vw`, 
+          width: `${item.width}vw`, 
+          height: `${item.height}vh`
+        }"
+        @click="selectStore(item)"
+      >
+      {{ item.title }}
+    </div>
     </PinchScrollZoom>
     <!-- <PinchScrollZoom
       ref="zoomer"
@@ -136,6 +153,8 @@ setup() {
     const container = ref(null);
     const containerWidth = ref(1500);
     const containerHeight = ref(500);
+    const checkMapFold = ref(false)
+    const selectedStore = ref(null);  // 클릭된 매장을 저장
 
     const scale = ref(2);
 
@@ -160,6 +179,7 @@ setup() {
       () => floorTitle.value, async (newval) => {
         if(newval) {
           console.log('newval', newval)
+          checkMapFold.value = true
           await nextTick();
           updateContainerDimensions();
         }
@@ -175,6 +195,473 @@ setup() {
       window.removeEventListener('resize', updateContainerDimensions);
     });
 
+    const stores = ref([
+      {
+        id: 'f1_a1',
+        title: '엠파크 매매상사',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 0.5,
+        height: 0.5,
+        left: 36,
+        top: 18.3,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a2',
+        title: '엠파크테스트카 매매상사2',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 0.5,
+        height: 0.5,
+        left: 36.6,
+        top: 18.3,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a3',
+        title: '엠파크테스트카 매매상사3',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 1,
+        height: 0.8,
+        left: 35.9,
+        top: 18.8,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a4',
+        title: '엠파크테스트카 매매상사4',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 0.6,
+        height: 1.7,
+        left: 37.2,
+        top: 18.3,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a5',
+        title: '엠파크테스트카 매매상사5',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 0.8,
+        height: 1.7,
+        left: 37.94,
+        top: 18.3,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a6',
+        title: '엠파크테스트카 매매상사6',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 0.8,
+        height: 1.7,
+        left: 38.9,
+        top: 18.3,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a7',
+        title: '우성상사',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 1.3,
+        height: 1.3,
+        left: 40.2,
+        top: 18.5,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a8',
+        title: '좋은차와사람들 자동차매매상사',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 1.3,
+        height: 1.3,
+        left: 41.6,
+        top: 18.5,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a9',
+        title: '명언에스앤씨',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 1,
+        height: 1.3,
+        left: 43.45,
+        top: 18.5,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a10',
+        title: '유비쿼터스 매매상사',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 1.3,
+        height: 1.3,
+        left: 44.5,
+        top: 18.5,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a11',
+        title: '유비쿼터스 매매상사',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 1.3,
+        height: 1.3,
+        left: 45.9,
+        top: 18.5,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a12',
+        title: '유비쿼터스 매매상사',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 1.9,
+        height: 3.3,
+        left: 35.8,
+        top: 19.3,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a13',
+        title: '유림 매매상사',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 2.1,
+        height: 1.3,
+        left: 35.7,
+        top: 21.2,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a14',
+        title: '드림 모터스',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 0.8,
+        height: 1.3,
+        left: 37.8,
+        top: 21.2,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a15',
+        title: '드림 모터스',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 1,
+        height: 1.3,
+        left: 38.63,
+        top: 21.2,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a16',
+        title: '드림 모터스',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 1.9,
+        height: 1.3,
+        left: 39.65,
+        top: 21.2,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a17',
+        title: '빌드 매매 상사',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 1.9,
+        height: 1.3,
+        left: 41.6,
+        top: 21.2,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a18',
+        title: '만랩 상사',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 1,
+        height: 1.3,
+        left: 43.5,
+        top: 21.2,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a19',
+        title: '바나 매매 상사',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 0.96,
+        height: 1.3,
+        left: 44.5,
+        top: 21.2,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a20',
+        title: '보노보노 매매 상사',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 0.96,
+        height: 1.3,
+        left: 45.5,
+        top: 21.2,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a21',
+        title: '아이씨엔씨 센터',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 0.96,
+        height: 1.3,
+        left: 46.5,
+        top: 21.2,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a22',
+        title: '큐브 디엔엠 모터스',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 2,
+        height: 4,
+        left: 51,
+        top: 18.3,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a23',
+        title: '큐브 디엔엠 모터스',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 0.75,
+        height: 1,
+        left: 53.1,
+        top: 19.7,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a24',
+        title: '다이노 모터스',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 1.5,
+        height: 1.2,
+        left: 53.1,
+        top: 20.6,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a25',
+        title: '동화모터스',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 1,
+        height: 1.2,
+        left: 52.7,
+        top: 21.1,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a26',
+        title: '꿈나라1',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 0.8,
+        height: 0.4,
+        left: 51.4,
+        top: 20.7,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a27',
+        title: '꿈나라2',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 0.8,
+        height: 0.4,
+        left: 51.6,
+        top: 21,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a28',
+        title: '꿈나라3',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 0.8,
+        height: 0.4,
+        left: 51.8,
+        top: 21.4,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a29',
+        title: '꿈나라4',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 1.2,
+        height: 1.9,
+        left: 50.3,
+        top: 20.8,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a30',
+        title: '꿈나라5',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 2,
+        height: 2.3,
+        left: 48.3,
+        top: 20.6,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a31',
+        title: '꿈나라6',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 3,
+        height: 2.5,
+        left: 53,
+        top: 23.3,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a32',
+        title: '꿈나라7',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 1,
+        height: 0.4,
+        left: 55.2,
+        top: 24.9,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a33',
+        title: '꿈나라7',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 1,
+        height: 0.4,
+        left: 55.4,
+        top: 25.3,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a34',
+        title: '꿈나라7',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 1,
+        height: 0.4,
+        left: 55.8,
+        top: 25.6,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      },
+      {
+        id: 'f1_a35',
+        title: '꿈나라8',
+        area: 'Hub',
+        location: 'a1',
+        tel: '010-2412-3123',
+        floor: '1',
+        width: 1,
+        height: 0.4,
+        left: 56,
+        top: 25.9,
+        publicKey: null//1:엘레베이터, 2:화장실, 3:장애인화장실, 4:은행/atm, 5:업무지원센터, 6:비상구, 7:고객주차장, 8:무인정산기 (공용공간 아니면 Null)   
+      }
+    ]
+  )
+
+    const selectStore = (val) => {
+      if(val){
+        console.log('상사정보', val)
+        selectedStore.value = val;
+
+      }
+    }
+
     return {
       titleEN,
 			floorTitle,
@@ -184,6 +671,10 @@ setup() {
       containerHeight,
       scale,
       scalingHandler,
+      checkMapFold,
+      stores,
+      selectedStore,
+      selectStore
     };
 	}
 })
@@ -257,5 +748,24 @@ setup() {
 			color: #555;
 		}
 	}
+}
+
+.storeItem {
+  position: absolute;
+  cursor: pointer;
+}
+
+.storeItem.active::after {
+  content: "";
+  position: absolute;
+  top: -1.6vw;
+  left: 0;
+  width: 100%;
+  height: 70px;
+  pointer-events: none;
+  background-image: url('@/assets/img/map_maker.svg');
+  background-size: 0.7vw 0.7vw;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 </style>
