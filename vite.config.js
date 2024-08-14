@@ -14,8 +14,9 @@ export default defineConfig({
         name: 'Mpark_Kios',
         short_name: 'PWA',
         description: 'My Vue3 Progressive Web App',
-        theme_color: '#ffffff',
+        //theme_color: '#ffffff',
         background_color: "#ffffff",
+        display: "fullscreen",
         icons: [
           {
             src: "icons/icon-192x192.png",
