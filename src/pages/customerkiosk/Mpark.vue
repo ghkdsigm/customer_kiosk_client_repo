@@ -33,13 +33,15 @@
     <PinchScrollZoom
       ref="zoomer"
       within
-      :width="containerWidth"
-      :height="400"
+      :width="1500"
+      :height="500"
+      :content-width="1500"
+      :content-height="500"
       :scale="scale"
       @scaling="scalingHandler"
       style="overflow: hidden;"
     >
-      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPVF9Q08xguqOxQWvdmyIAFzHYAjNNd5Dn5A&s" width="300" height="400" />
+      <img src="https://img1.daumcdn.net/thumb/R800x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F0Ignd%2FbtsgCkpouTB%2FKK5sC7rKq4RYckg3wXJy2K%2Fimg.png" width="1500" height="500" />
       <div
         class="absolute bg-red-500 text-white"
         style="top: 20%; left: 30%; width: 100px; height: 100px;"
