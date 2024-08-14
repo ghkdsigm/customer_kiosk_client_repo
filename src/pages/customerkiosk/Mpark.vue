@@ -37,7 +37,7 @@
       :scale="scale"
       @scaling="scalingHandler"
     >
-      <img src="@/assets/img/introduce/hub_1f.png" :style="{width: containerWidth,height: containerHeight,left: checkMapFold ? '20.85vw' : '22vw'}" style="max-height: 40vh; top: 7vw; position: relative;"/>
+      <img src="@/assets/img/introduce/hub_1f.png" :style="{width: containerWidth,height: containerHeight,left: checkMapFold ? '20.85vw' : '22vw'}" style="max-height: 40vh; top: 5vw; position: relative;"/>
       <!-- <div
         class="absolute bg-red-500 text-white"
         style="top: 82.5%; left: 40.25vw; width: 1.3vw; height: 14px; font-size: 0.3vw; display: flex; align-items: center; justify-content: center;"
@@ -52,7 +52,7 @@
         :class="{ 'active': selectedStore && selectedStore.id === item.id }"
         style="font-size: 0.2vw; display: flex; align-items: center; justify-content: center;" 
         :style="{ 
-          top: `${item.top}vw`, 
+          top: `${item.top - 2}vw`, 
           left: checkMapFold ? `${item.left - 1.15}vw` : `${item.left}vw`, 
           width: `${item.width}vw`, 
           height: `${item.height}vh`
@@ -151,7 +151,7 @@ setup() {
 
     const zoomer = ref(null);
     const container = ref(null);
-    const containerWidth = ref(1500);
+    const containerWidth = ref(1700);
     const containerHeight = ref(500);
     const checkMapFold = ref(false)
     const selectedStore = ref(null);  // 클릭된 매장을 저장
