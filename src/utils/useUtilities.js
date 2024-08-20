@@ -20,8 +20,17 @@ export function useUtilities() {
     return selectedFolder[fileName]?.default || selectedFolder[fileName];
   };
 
+  const setImageSrc = (folder, file) => {
+      const images = import.meta.glob('@/assets/img/**/*.@(svg|png|jpg)', { eager: true });
+
+      const fileName = `/src/assets/img/${folder}/${file}`;
+      
+      return images[fileName + '.svg']?.default || images[fileName + '.png']?.default || images[fileName + '.jpg']?.default || images[fileName + '.svg'] || images[fileName + '.png'] || images[fileName + '.jpg'];
+  };
+
   return {
     formatStringWithNewlines,
-    getImageSrc
+    getImageSrc,
+    setImageSrc
   };
 }
