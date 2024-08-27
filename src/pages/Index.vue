@@ -1,7 +1,7 @@
 <template>
     <!-- Index -->
     <div class="flex h-full justify-center items-center text-4xl">
-        emptyHome(test)
+        emptyHome(testt)
       </div>
   </template>
   
