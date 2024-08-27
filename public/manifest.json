@@ -2,8 +2,8 @@
     "theme_color": "#ffffff",
     "background_color": "#ffffff",
     "display": "fullscreen",
-    "scope": "/customerkiosk",
-    "start_url": "/customerkiosk",
+    "scope": "/customerkiosk/employee",
+    "start_url": "/customerkiosk/employee",
     "name": "Mpark_Kiosk",
     "short_name": "PWA",
     "icons": [
