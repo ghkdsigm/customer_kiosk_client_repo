@@ -3,7 +3,7 @@
     "background_color": "#ffffff",
     "display": "fullscreen",
     "scope": "/",
-    "start_url": "/test",
+    "start_url": "/customerkiosk",
     "name": "Mpark_Kiosk",
     "short_name": "PWA",
     "icons": [
