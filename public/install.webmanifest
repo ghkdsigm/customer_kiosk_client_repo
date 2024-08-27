@@ -11,5 +11,5 @@
     ],
     "name": "Mpark_Kiosk", 
     "short_name": "PWA",
-    "start_url": "/"
+    "start_url": "/customerkiosk"
   }

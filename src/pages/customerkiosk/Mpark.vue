@@ -758,7 +758,7 @@ setup() {
 .storeItem.active::after {
   content: "";
   position: absolute;
-  top: -1.6vw;
+  top: -2.5vw;
   left: 0;
   width: 100%;
   height: 70px;

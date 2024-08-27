@@ -37,7 +37,7 @@
                     <div class="itemWrap flex justify-center items-center text-gray-400 hover:text-red-700 flex-col hover:bg-[#169171] hover:text-white text-gray-900 h-full hover:cursor-pointer" v-for="(item, idx) in searchCarMenu" :class="{ 'bg-[#0C7E60] text-white': selectedCarIndex === idx }" :key="idx" @click="selectMenuCarSearch(idx)">
                         <div class="text-center">
                             <p class="text-xs font-medium">{{ item.subtit }}</p>
-                            <p class="font-medium text-2xl">{{ formatStringWithNewlines(item.title) }}</p>
+                            <p class="font-medium text-2xl">{{ item.title }}</p>
                         </div>
                     </div>
                 </div>
@@ -113,7 +113,7 @@ export default defineComponent({
         }
 
         //층별선택
-        const selectSecondMenu = (idx) => {
+        const selectSecondMenu = idx => {
             if (idx !== undefined && idx !== null) {
                 selectedSecondIndex.value = idx;
                 selectedMenu.value ? newTitle.value = selectedMenu.value.subMenu[selectedSecondIndex.value].title : null
@@ -122,7 +122,7 @@ export default defineComponent({
             }
         }
 
-        watch(selectedMenu, (newVal) => {
+        watch(selectedMenu, newVal => {
             if (newVal !== null) {
                 menuSelected.value = true;                
                 emit('menu-selected', menuSelected.value);

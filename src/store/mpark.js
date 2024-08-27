@@ -2,7 +2,7 @@
 import { defineStore } from 'pinia'
 import http from "@/api/utils/request";
 
-export const useMparkStore = defineStore('counter', {
+export const useMparkStore = defineStore('mpark', {
   state: () => ({
     floorTitle: ''
   }),
