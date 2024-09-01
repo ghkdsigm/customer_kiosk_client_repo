@@ -49,29 +49,32 @@
 					"
 					:style="{ width: containerWidth, height: containerHeight, left: checkMapFold ? '20.85vw' : '22vw' }"
 					style="max-height: 40vh; top: 7vw; position: relative"
+					@load="onImageLoad"
 				/>
 				<!-- 상사및입점 -->
-				<div
-					v-for="(item, idx) in stores"
-					:key="idx"
-					class="absolute font-normal leading-none text-center storeItem"
-					:class="{ active: selectedStore && selectedStore.id === item.id }"
-					style="
-						font-size: 0.2vw;
-						display: flex;
-						align-items: center;
-						justify-content: center;
-						letter-spacing: 0.1px !important;
-					"
-					:style="{
-						top: `${item.top}vw`,
-						left: checkMapFold ? `${item.left - 1.15}vw` : `${item.left}vw`,
-						width: `${item.width}vw`,
-						height: `${item.height}vh`,
-					}"
-					@click="selectStore(item)"
-				>
-					{{ item.title }}
+				<div v-if="isLoaded">
+					<div
+						v-for="(item, idx) in stores"
+						:key="idx"
+						class="absolute font-normal leading-none text-center storeItem"
+						:class="{ active: selectedStore && selectedStore.id === item.id }"
+						style="
+							font-size: 0.2vw;
+							display: flex;
+							align-items: center;
+							justify-content: center;
+							letter-spacing: 0.1px !important;
+						"
+						:style="{
+							top: `${item.top}vw`,
+							left: checkMapFold ? `${item.left - 1.15}vw` : `${item.left}vw`,
+							width: `${item.width}vw`,
+							height: `${item.height}vh`,
+						}"
+						@click="selectStore(item)"
+					>
+						{{ item.title }}
+					</div>
 				</div>
 				<!-- 기타공용공간 좌표 추가해야함!! -->
 				<!-- <div
@@ -230,6 +233,8 @@ export default defineComponent({
 		const isPopupVisible = ref(false)
 		const scale = ref(2)
 
+		const isLoaded = ref(false)
+
 		//부제목
 		const subTitleDataMap = {
 			HUB: {
@@ -364,6 +369,12 @@ export default defineComponent({
 			console.log('취소 버튼이 클릭되었습니다.')
 			isPopupVisible.value = false // 팝업 닫기
 		}
+
+		//이미지 로드완료
+		const onImageLoad = () => {
+			isLoaded.value = true;
+		}
+
 
 		return {
 			titleEN,
