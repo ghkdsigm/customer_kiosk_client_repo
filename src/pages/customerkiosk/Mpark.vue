@@ -486,7 +486,6 @@ export default defineComponent({
 }
 
 .storeItem.active::after {
-<<<<<<< HEAD
 	// content: '';
 	// position: absolute;
 	// top: -2.5vw;
@@ -509,18 +508,5 @@ export default defineComponent({
 	background-size: 0.7vw 0.7vw;
 	background-repeat: no-repeat;
 	background-position: center;
-=======
-  content: "";
-  position: absolute;
-  top: -2.5vw;
-  left: 0;
-  width: 100%;
-  height: 70px;
-  pointer-events: none;
-  background-image: url('@/assets/img/map_maker.svg');
-  background-size: 0.7vw 0.7vw;
-  background-repeat: no-repeat;
-  background-position: center;
->>>>>>> 7afb3a58728b3e243fad078faa5a2e1bac8a57cd
 }
 </style>
