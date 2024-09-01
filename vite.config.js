@@ -14,9 +14,8 @@ export default defineConfig({
         name: 'Mpark_Kios',
         short_name: 'PWA',
         description: 'My Vue3 Progressive Web App',
-        //theme_color: '#ffffff',
-        background_color: "#ffffff",
-        display: "fullscreen",
+        theme_color: '#0C7E60',
+        background_color: "#0C7E60",
         icons: [
           {
             src: "icons/icon-192x192.png",
@@ -69,16 +68,5 @@ export default defineConfig({
   },
   compilerOptions: {
     isCustomElement: (tag) => tag.startsWith('custom-') // 맞춤형 요소 설정
-  },
-  // build: {
-  //   rollupOptions: {
-  //     output: {
-  //       manualChunks(id) {
-  //         if (id.includes('node_modules')) {
-  //           return id.toString().split('node_modules/')[1].split('/')[0].toString();
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
+  }
 })

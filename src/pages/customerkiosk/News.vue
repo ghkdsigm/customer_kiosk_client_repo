@@ -1,30 +1,28 @@
 <template>
-  <div class="flex flex-col h-full">
-    <h1 class="tit">{{ titleEN }}</h1>
-    <HomeNews />
-  </div>
+	<div class="flex flex-col h-full">
+		<h1 class="tit">{{ titleEN }}</h1>
+		<News />
+	</div>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
-import { useTitleEN } from '@/composables/useTitleEN';
-import HomeNews from '@/components/home/news/index.vue'
+import { defineComponent, ref, onMounted } from 'vue'
+import { useTitleEN } from '@/composables/useTitleEN'
+import News from '@/components/customerkiosk/news/index.vue'
 
 export default defineComponent({
-name: 'PageNews',
-components: {
-    HomeNews,
-},
-setup() {
-    const { titleEN } = useTitleEN();
+	name: 'CustomerkioskNews',
+	components: {
+		News,
+	},
+	setup() {
+		const { titleEN } = useTitleEN()
 
-    return {
-      titleEN
-    };
-  }
-});
+		return {
+			titleEN,
+		}
+	},
+})
 </script>
 
-<style>
-
-</style>
+<style></style>

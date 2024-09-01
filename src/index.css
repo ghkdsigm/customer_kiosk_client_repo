@@ -4,81 +4,80 @@
 
 /* Pretendard 폰트 설정 */
 body {
-    font-family: 'Pretendard', ui-sans-serif, system-ui;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-use-select: none;
-    user-select: none;
+	font-family: 'Pretendard', ui-sans-serif, system-ui;
+	user-select: none;
+	touch-action: pan-y;
 }
 
 @font-face {
-    font-family: 'Pretendard';
-    font-weight: 800;
-    src: url('@/assets/fonts/Pretendard-ExtraBold.woff') format('woff');
-    font-style: normal;
-    font-display: swap;
+	font-family: 'Pretendard';
+	font-weight: 800;
+	src: url('@/assets/fonts/Pretendard-ExtraBold.woff') format('woff');
+	font-style: normal;
+	font-display: swap;
 }
 @font-face {
-    font-family: 'Pretendard';
-    font-weight: 700;
-    src: url('@/assets/fonts/Pretendard-Bold.woff') format('woff');
-    font-style: normal;
-    font-display: swap;
+	font-family: 'Pretendard';
+	font-weight: 700;
+	src: url('@/assets/fonts/Pretendard-Bold.woff') format('woff');
+	font-style: normal;
+	font-display: swap;
 }
 @font-face {
-    font-family: 'Pretendard';
-    font-weight: 600;
-    src: url('@/assets/fonts/Pretendard-SemiBold.woff') format('woff');
-    font-style: normal;
-    font-display: swap;
+	font-family: 'Pretendard';
+	font-weight: 600;
+	src: url('@/assets/fonts/Pretendard-SemiBold.woff') format('woff');
+	font-style: normal;
+	font-display: swap;
 }
 @font-face {
-    font-family: 'Pretendard';
-    font-weight: 400;
-    src: url('@/assets/fonts/Pretendard-Regular.woff') format('woff');
-    font-style: normal;
-    font-display: swap;
+	font-family: 'Pretendard';
+	font-weight: 400;
+	src: url('@/assets/fonts/Pretendard-Regular.woff') format('woff');
+	font-style: normal;
+	font-display: swap;
 }
 @font-face {
-    font-family: 'Pretendard';
-    font-weight: 300;
-    src: url('@/assets/fonts/Pretendard-Light.ttf') format('truetype');
-    font-style: normal;
-    font-display: block;
+	font-family: 'Pretendard';
+	font-weight: 300;
+	src: url('@/assets/fonts/Pretendard-Light.ttf') format('truetype');
+	font-style: normal;
+	font-display: block;
 }
-
 
 button {
-    @apply focus:outline-none;
+	@apply focus:outline-none;
 }
 
 .border-color {
-    @apply border-gray-100;
+	@apply border-gray-100;
 }
 
 .text-gray {
-    @apply text-gray-500;
+	@apply text-gray-500;
 }
-
 
 .tit {
-    font-weight:700;
-    font-size:1.1vw;
+	font-weight: 700;
+	font-size: 1.46vw;
 }
 .mainTit {
-    font-weight:700;
-    font-size:2.3vw;
+	font-weight: 700;
+	font-size: 58px;
 }
 
-.keybutton:active {
-    position: relative;
-    top: 2px;
-    transition: all 0.2s ease;
-    opacity: 0.5;
+.text-ellipsis-1-line {
+	@apply overflow-hidden text-ellipsis;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 1;
+	word-wrap: break-word;
 }
 
-/* .pinch-scroll-zoom__content {
-  width:100%;
-  height:100%;
-  transform-origin:0;
-} */
+.text-ellipsis-2-line {
+	@apply overflow-hidden text-ellipsis;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	word-wrap: break-word;
+}

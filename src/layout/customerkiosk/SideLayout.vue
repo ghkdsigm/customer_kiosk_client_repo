@@ -1,21 +1,39 @@
 <template>
-  <div class="w-full h-full absolute overflow-hidden">
-    <!--Main Section-->
-    <div class="relative screenArea"  :class="[{ 'secondMenu': checkSide === true && currentPath !== '/customerkiosk/searchcar' && currentPath !== '/customerkiosk/searchcarnumber'},{ 'bg-[#EBEFF2]' : currentPath === '/customerkiosk/searchcar' || currentPath === '/customerkiosk/searchcarnumber'}]">      
-        <div class="mx-auto h-full 2xl:p-22 p-12">
-            <router-view v-slot="{ Component }">
-              <component :is="Component"></component>
-            </router-view>
-            <!-- 키보드 표시 버튼 (여기서도 사용할 수 있음) -->
-            <!-- <button @click="toggleKeyboard" class="show-keyboard-button">키보드 표시</button> -->
-        </div>            
-    </div>
-    <!--Side Menu-->
-      <SideMenu :sideItems="sideItems" @menu-selected="handleMenuSelected"/>  
-    <!-- Search -->
-        
-    <Search v-if="currentPath.includes('/employee') && checkEmployee" />
-  </div>
+	<div class="w-full h-full absolute overflow-hidden">
+		<!--Main Section-->
+		<div
+			class="relative screenArea"
+			:class="[
+				{
+					secondMenu:
+						checkSide === true &&
+						currentPath !== '/customerkiosk/searchcarmanufacturer' &&
+						currentPath !== '/customerkiosk/searchcarnumber' &&
+						currentPath !== '/customerkiosk/carsearchresults' &&
+						currentPath !== '/customerkiosk/employee' &&
+						currentPath !== '/customerkiosk/store',
+				},
+				{
+					'bg-[#EBEFF2]':
+						currentPath === '/customerkiosk/searchcarmanufacturer' ||
+						currentPath === '/customerkiosk/searchcarnumber' ||
+						currentPath === '/customerkiosk/carsearchresults',
+				},
+				{ screenArea02: currentPath === '/customerkiosk/store' },
+			]"
+		>
+			<div class="mx-auto h-full 2xl:p-22 p-[3vh]">
+				<router-view v-slot="{ Component }">
+					<component :is="Component"></component>
+				</router-view>
+			</div>
+		</div>
+		<!--Side Menu-->
+		<SideMenu :sideItems="sideItems" @menu-selected="handleMenuSelected" />
+
+		<!--Search Keyboard-->
+		<Search v-if="currentPath.includes('/employee') && checkEmployee && keboardUse" />
+	</div>
 </template>
 
 <script>
@@ -23,172 +41,79 @@ import { ref, onMounted, computed } from 'vue'
 //import router from '../router'
 import SideMenu from '@/components/layout/appbar/sidemenu.vue'
 import Search from '@/components/common/keyboard/customKeyboard.vue'
-import { useRoute } from 'vue-router';
+import { useRoute } from 'vue-router'
 import { useCommonStore } from '@/store/common'
+import { useMparkStore } from '@/store/mpark'
+import { sideAreaSearch } from '@/data/common'
 
-export default {    
-  components: {   
-    SideMenu,
-    Search
-  },
-  props:{
-    // bottomItems: {
-    //   type:Array,
-    //   default:(()=>[])
-    // }
-  },
-  setup(){
-    let checkEmployee = ref(true)
-    const currentRoutes = useRoute()
-    const currentPath = computed(() => currentRoutes.path);
-    const commonStore = useCommonStore()
-    //const routes = ref([])      
+export default {
+	components: {
+		SideMenu,
+		Search,
+	},
+	props: {
+		// bottomItems: {
+		//   type:Array,
+		//   default:(()=>[])
+		// }
+	},
+	setup() {
+		let checkEmployee = ref(true)
+		const currentRoutes = useRoute()
+		const currentPath = computed(() => currentRoutes.path)
+		const commonStore = useCommonStore()
+		//const routes = ref([])
 
-    //Side전용
-    const sideItems = ref([
-      {
-        img: 'hub',
-        title: '허브 안내',
-        subtit: 'HUB',
-        to: '',
-        subMenu: [
-          {
-            title: '1F', 
-            to: '',
-          },
-          {
-            title: '2F', 
-            to: '',
-          },
-          {
-            title: '3F', 
-            to: '',
-          },
-          {
-            title: '4F', 
-            to: '',
-          },
-          {
-            title: '5F', 
-            to: '',
-          },
-          {
-            title: '6F', 
-            to: '',
-          },
-          {
-            title: '7F', 
-            to: '',
-          },
-          {
-            title: '8F', 
-            to: '',
-          },
-          {
-            title: '9F', 
-            to: '',
-          },
-        ],
-        color: '#0C7E60',
-        state: true
-      },
-      {
-        img: 'tower',
-        title: '타워 안내',
-        subtit: 'TOWER',        
-        to: '',
-        subMenu: [
-          {
-            title: '1F', 
-            to: '',
-          },
-          {
-            title: '2F', 
-            to: '',
-          },
-          {
-            title: '단치전체', 
-            to: '',
-          },
-        ],
-        color: '#ffffff',
-        state: true
-      },
-      {
-        img: 'land',
-        title: '랜드 안내',
-        subtit: 'LAND',        
-        to: '',
-        subMenu: [
-          {
-            title: '1F', 
-            to: '',
-          },
-          {
-            title: '2F', 
-            to: '',
-          },
-          {
-            title: '3F', 
-            to: '',
-          },
-        ],
-        color: '#ffffff',
-        state: true
-      },
-    ])
+		const mparkStore = useMparkStore()
+		const keboardUse = computed(() => mparkStore.keboardUse)
 
-    const checkSide = ref(false)
-    // onBeforeMount(()=>{
-    //   routes.value = router.options.routes.filter((route) => route.meta.isMenu == true)
-    // });
+		//Side전용
+		const sideItems = ref(sideAreaSearch)
 
-    const handleMenuSelected = (menuSelected) => {
-      console.log('Menu selected:', menuSelected);
-      if(menuSelected){
-        checkSide.value = true
-      } else {
-        checkSide.value = false
-      }
-      // Do something when menu is selected
-    };
+		const checkSide = ref(false)
+		// onBeforeMount(()=>{
+		//   routes.value = router.options.routes.filter((route) => route.meta.isMenu == true)
+		// });
 
-    const toggleKeyboard = () => {
-      commonStore.toggleKeyboard()
-    }
+		const handleMenuSelected = menuSelected => {
+			console.log('Menu selected:', menuSelected)
+			if (menuSelected) {
+				checkSide.value = true
+			} else {
+				checkSide.value = false
+			}
+		}
 
+		const toggleKeyboard = () => {
+			commonStore.setKeyBoardUse()
+		}
 
-    onMounted(() => {
-    })
-    // onBeforeUpdate(() => {
-    // })
-    // onUpdated(() => {
-    // })
-    // onBeforeUnmount(() => {
-    // })
-    // onUnmounted(() => {
-    // })
+		onMounted(() => {})
 
-    return {
-      // routes,
-      // router,  
-      checkEmployee,
-      sideItems,
-      handleMenuSelected,
-      checkSide,
-      currentPath,
-      toggleKeyboard
-    }
-  },    
+		return {
+			// routes,
+			// router,
+			checkEmployee,
+			sideItems,
+			handleMenuSelected,
+			checkSide,
+			currentPath,
+			toggleKeyboard,
+			keboardUse,
+		}
+	},
 }
 </script>
 
 <style scoped>
-  .screenArea { 
-    height:calc(100% - 12vh);
-    width: calc(100% - 9vw);
-  }  
-  .screenArea.secondMenu {
-    width: calc(100% - 14vw) !important;
-  }
-  </style>
+.screenArea {
+	height: calc(100% - 10vh);
+	width: calc(100% - 7.7vw);
+}
+.screenArea02 {
+	height: calc(100% - 18vh);
+}
+.screenArea.secondMenu {
+	width: calc(100% - 12.2vw) !important;
+}
+</style>

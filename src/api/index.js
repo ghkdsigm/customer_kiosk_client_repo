@@ -1,5 +1,5 @@
-import userService from '@/api/services/userService';
+import customerkioskService from '@/api/services/customerkioskService.js';
 
 export {
-    userService,
+    customerkioskService
 };
