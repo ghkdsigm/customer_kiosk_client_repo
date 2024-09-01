@@ -397,6 +397,8 @@ export default defineComponent({
 			handleConfirm,
 			handleCancel,
 			imageSrc,
+			isLoaded,
+			onImageLoad
 			//예시
 			// filteredProducts,
 		}
