@@ -1,22 +1,6 @@
 <template>
-<<<<<<< HEAD
 	<!-- Index(첫진입화면) -->
 	<!-- <div class="flex h-full justify-center items-center text-4xl introTest">emptyHome(test)</div> -->
-=======
-    <!-- Index -->
-    <div class="flex h-full justify-center items-center text-4xl">
-        emptyHome(testt)
-      </div>
-  </template>
-  
-  <script>
-  import { onMounted, onUnmounted } from 'vue'
-  import { useRouter } from 'vue-router'
-  export default {
-    name: 'emptyHome',
-    setup() {
-        const router = useRouter()
->>>>>>> 7afb3a58728b3e243fad078faa5a2e1bac8a57cd
 
 	<div class="flex flex-col h-full justify-center items-center text-4xl introTest">
 		<div>테스트버전 빈 화면입니다. 개발 이동을 위해</div>

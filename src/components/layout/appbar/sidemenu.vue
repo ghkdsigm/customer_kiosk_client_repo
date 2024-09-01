@@ -1,5 +1,4 @@
 <template>
-<<<<<<< HEAD
 	<div>
 		<!-- 엠파크층별안내 -->
 		<div
@@ -118,53 +117,6 @@
 			</div>
 		</div>
 	</div>
-=======
-    <div>
-        <div class="min-h-0 flex-1 flex overflow-hidden sideArea" v-if="currentPath !== '/customerkiosk/searchcar' && currentPath !== '/customerkiosk/searchcarnumber'">
-            <!-- 2Depth -->
-            <div class="secondTab flex-shrink-0 overflow-y-auto w-[5vw]" v-if="checkSubMenu && selectedMenu !== null">
-                <ul>
-                    <li v-for="(item, idx) in selectedMenu.subMenu" :key="idx">
-                        <div class="secondTabItems 2xl:w-[6vw] 2xl:h-[6vw] w-[3.8vw] h-[3.8vw] rounded-full flex justify-center items-center" :class="{ 'bg-[#0C7E60] text-white': selectedSecondIndex === idx }" @click="selectSecondMenu(idx)">
-                            {{ item.title }}
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            <!-- 1Depth -->
-            <div aria-label="Sidebar" class="firstTab lg:block flex-shrink-0 overflow-y-auto w-[9vw]">
-                <p class="w-full h-[120px] flex bg-white">
-                    <img src="@/assets/img/side_logo.svg" alt="mpark" class="w-fit m-auto hover:cursor-pointer" @click="moveToIntro">
-                </p>
-                <div class="sideMenutItem relative w-full grid grid-rows-3 h-full bg-[#F8F8F8]">
-                    <div class="itemWrap flex justify-center items-center text-gray-400 hover:text-red-700 flex-col hover:bg-[#169171] hover:text-white text-gray-900 h-full hover:cursor-pointer" v-for="(item, idx) in sideItems" :class="{ 'bg-[#0C7E60] text-white': selectedIndex === idx }" :key="idx" @click="selectMenu(idx)">
-                        <div>
-                            <p class="relative text-xs font-medium top-[4vh]">{{ item.subtit }}</p>
-                            <p class="relative text-2xl font-medium top-[4vh]">{{ item.title }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="min-h-0 flex-1 flex overflow-hidden sideArea" v-else>
-            <!-- 구입차량조회메뉴 -->
-            <!-- 1Depth -->
-            <div aria-label="SidebarCarSearch" class="firstTab lg:block flex-shrink-0 overflow-y-auto w-[9vw]">
-                <p class="w-full h-[120px] flex bg-white">
-                    <img src="@/assets/img/side_logo.svg" alt="mpark" class="w-fit m-auto hover:cursor-pointer" @click="moveToIntro">
-                </p>
-                <div class="sideMenutItem02 relative w-full grid grid-rows-2 h-full bg-[#F8F8F8]">
-                    <div class="itemWrap flex justify-center items-center text-gray-400 hover:text-red-700 flex-col hover:bg-[#169171] hover:text-white text-gray-900 h-full hover:cursor-pointer" v-for="(item, idx) in searchCarMenu" :class="{ 'bg-[#0C7E60] text-white': selectedCarIndex === idx }" :key="idx" @click="selectMenuCarSearch(idx)">
-                        <div class="text-center">
-                            <p class="text-xs font-medium">{{ item.subtit }}</p>
-                            <p class="font-medium text-2xl">{{ item.title }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
->>>>>>> 7afb3a58728b3e243fad078faa5a2e1bac8a57cd
 </template>
 
 <script>
@@ -224,7 +176,6 @@ export default defineComponent({
 				updateFloorTitle(newTitle.value)
 			}
 
-<<<<<<< HEAD
 			console.log('idx', selectedMenu.value)
 		}
 
@@ -239,25 +190,6 @@ export default defineComponent({
 				}
 			}
 		}
-=======
-        //층별선택
-        const selectSecondMenu = idx => {
-            if (idx !== undefined && idx !== null) {
-                selectedSecondIndex.value = idx;
-                selectedMenu.value ? newTitle.value = selectedMenu.value.subMenu[selectedSecondIndex.value].title : null
-                //MPARK 층별 타이틀 상태관리
-                updateFloorTitle(newTitle.value)
-            }
-        }
-
-        watch(selectedMenu, newVal => {
-            if (newVal !== null) {
-                menuSelected.value = true;                
-                emit('menu-selected', menuSelected.value);
-            }
-        });        
-       
->>>>>>> 7afb3a58728b3e243fad078faa5a2e1bac8a57cd
 
 		//층별선택
 		const selectSecondMenu = idx => {

@@ -5,7 +5,6 @@ import http from '@/api/utils/request'
 import customerkioskService from '@/api/services/customerkioskService'
 
 export const useMparkStore = defineStore('mpark', {
-<<<<<<< HEAD
 	state: () => ({
 		danjiTitle: '',
 		floorTitle: '',
@@ -60,17 +59,3 @@ export const useMparkStore = defineStore('mpark', {
 		// },
 	},
 })
-=======
-  state: () => ({
-    floorTitle: ''
-  }),
-  actions: {
-    checkFloorTitle() {
-        return this.floorTitle
-    },
-    setFloorTitle(newTitle) {
-        this.floorTitle = newTitle
-    }  
-  }
-})
->>>>>>> 7afb3a58728b3e243fad078faa5a2e1bac8a57cd
