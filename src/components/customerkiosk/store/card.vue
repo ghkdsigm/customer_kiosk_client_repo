@@ -1,6 +1,6 @@
 <template>
 	<div class="card_store">
-		<img src="../../assets/img/store/card_default.png" alt="" />
+		<img src="@/assets/img/store/card_default.png" alt="" />
 		<div class="cont">
 			<p class="name flex items-center">(주) 프렌드파트너스</p>
 			<div class="btn_bar">
