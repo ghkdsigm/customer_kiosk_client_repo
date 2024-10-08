@@ -13,8 +13,6 @@
     "@vue/cli-plugin-pwa": "^5.0.8",
     "axios": "^0.27.2",
     "custom_kiosk_repo": "file:",
-    "eslint": "^9.8.0",
-    "eslint-plugin-vue": "^9.27.0",
     "hangul-js": "^0.2.6",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^4.0.1",
