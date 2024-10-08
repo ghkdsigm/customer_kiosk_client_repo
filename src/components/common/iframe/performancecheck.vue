@@ -1,13 +1,13 @@
 <template>
 	<div class="w-full container mx-auto h-full">
 		<div class="iframe-wrapper h-full">
-			<LoadingSpinner v-if="isLoading" />
+			<LoadingStatus v-if="isLoading" />
 			<iframe
 				v-show="!isLoading"
 				:src="`https://www.m-park.co.kr/popup/performance/${issueNum}`"
 				title="Example Iframe"
 				class="w-full h-full border"
-      			@load="onIframeLoad"
+				@load="onIframeLoad"
 			></iframe>
 		</div>
 	</div>
@@ -26,14 +26,14 @@ export default defineComponent({
 	},
 	components: {},
 	setup(props) {
-		const isLoading = ref(true);
+		const isLoading = ref(true)
 		const onIframeLoad = () => {
-			isLoading.value = false; 
-		};
+			isLoading.value = false
+		}
 		return {
 			isLoading,
 			onIframeLoad,
-		};
+		}
 	},
 })
 </script>
@@ -62,9 +62,9 @@ iframe {
 }
 
 .loading-spinner {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 400px; /* iframe 높이와 동일하게 설정 */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 400px; /* iframe 높이와 동일하게 설정 */
 }
 </style>

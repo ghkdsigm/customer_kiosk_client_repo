@@ -134,6 +134,7 @@ export default {
 ::v-deep .swiper-pagination {
 	display: flex;
 	justify-content: center;
+	bottom: 3vh;
 }
 ::v-deep .swiper-pagination-bullet {
 	text-align: center;

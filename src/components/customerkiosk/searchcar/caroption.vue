@@ -4,7 +4,11 @@
 		<div ref="listContainer" class="lists h-full overflow-y-hidden">
 			<div v-for="(items, category) in groupedOptions" :key="category" class="">
 				<h2 class="text-xl font-semibold text-left bg-[#F1F1F1] py-[1.31vh] px-[1vw] text-[0.85vw] text-[#555555]">
-					{{ category }}<span class="pl-[0.2vw]"><b class="text-[#00B0B9]">4</b>개</span>
+					{{ category
+					}}<span class="pl-[0.2vw]"
+						><b class="text-[#00B0B9]">{{ checkedItemCount(items) }}</b
+						>개</span
+					>
 				</h2>
 
 				<ul class="list-disc flex justify-between px-[1vw] py-[2.9vh] gap-x-[1vw] gap-y-[1.5vw] grid grid-cols-6">
@@ -12,6 +16,7 @@
 						v-for="item in items"
 						:key="item.code"
 						class="list-none text-[0.85vw] font-normal text-[#B4B4B4] text-left gap-[1vw]"
+						:class="checkOptions(item.code) ? 'text-[black]' : 'text-[#B4B4B4]'"
 					>
 						{{ item.codeName }}
 					</li>
@@ -36,9 +41,14 @@ import { ref } from 'vue'
 
 export default {
 	name: 'CustomerKioskSearchCarCaroption',
-	setup() {
+	props: {
+		checkOption: {
+			type: Array,
+			default: [],
+		},
+	},
+	setup(props) {
 		const listContainer = ref(null)
-
 		const options = ref([
 			{
 				code: '007001',
@@ -269,6 +279,16 @@ export default {
 			}, {}),
 		)
 
+		//옵션별 개수
+		const checkedItemCount = items => {
+			return items.filter(item => checkOptions(item.code)).length
+		}
+
+		//개수당 체크
+		const checkOptions = options => {
+			return props.checkOption.includes(options)
+		}
+
 		const scrollUp = () => {
 			listContainer.value.scrollBy({ top: -200, behavior: 'smooth' })
 		}
@@ -283,6 +303,8 @@ export default {
 			groupedOptions,
 			scrollUp,
 			scrollDown,
+			checkOptions,
+			checkedItemCount,
 		}
 	},
 }

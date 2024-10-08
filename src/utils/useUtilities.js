@@ -36,9 +36,36 @@ export function useUtilities() {
 		)
 	}
 
+	//차량검색 차순
+	const sortDataByYearAndAmount = (data, part) => {
+		return [...data].sort((a, b) => {
+			if (part === 'yyyy') {
+				// 연식 최신순으로 정렬
+				return b[part] - a[part]
+			} else if (part === 'hit') {
+				// 조회수 높은 순으로 정렬
+				return b[part] - a[part]
+			} else {
+				// 일반적인 오름차순 정렬
+				if (a[part] < b[part]) return -1
+				if (a[part] > b[part]) return 1
+				return 0
+			}
+		})
+	}
+
+	//차량주행거리
+	const common_addComma = val => {
+		if (!val) return val
+		if (typeof val === 'string') return Number(val).toLocaleString()
+		return val.toLocaleString()
+	}
+
 	return {
 		formatStringWithNewlines,
 		getImageSrc,
 		setImageSrc,
+		sortDataByYearAndAmount,
+		common_addComma,
 	}
 }

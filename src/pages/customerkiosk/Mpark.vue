@@ -7,25 +7,9 @@
 			</div>
 
 			<ul class="flex list_item">
-				<li>
-					<span class="color c1"></span>
-					<span class="name text-[0.85vw]">매매상사</span>
-				</li>
-				<li>
-					<span class="color c2"></span>
-					<span class="name text-[0.85vw]">지원시설</span>
-				</li>
-				<li>
-					<span class="color c3"></span>
-					<span class="name text-[0.85vw]">음식점</span>
-				</li>
-				<li>
-					<span class="color c4"></span>
-					<span class="name text-[0.85vw]">정비/세차/광택</span>
-				</li>
-				<li>
-					<span class="color c5"></span>
-					<span class="name text-[0.85vw]">기타</span>
+				<li v-for="(item, index) in listItems" :key="index">
+					<span :class="`color c${index + 1}`"></span>
+					<span class="name text-[0.85vw]">{{ item }}</span>
 				</li>
 			</ul>
 		</div>
@@ -51,42 +35,48 @@
 					style="max-height: 40vh; top: 7vw; position: relative"
 					@load="onImageLoad"
 				/>
-				<!-- 상사및입점 -->
+				<!-- 상사및입점//데이터바인딩 -->
 				<div v-if="isLoaded">
 					<div
-						v-for="(item, idx) in stores"
+						v-for="(item, idx) in filterStore"
 						:key="idx"
 						class="absolute font-normal leading-none text-center storeItem"
-						:class="{ active: selectedStore && selectedStore.id === item.id }"
-						style="
-							font-size: 0.2vw;
-							display: flex;
-							align-items: center;
-							justify-content: center;
-							letter-spacing: 0.1px !important;
-						"
+						:class="{ active: selectedStore && selectedStore.officeCode === item?.officeCode }"
+						style="font-size: 0.2vw; display: flex; align-items: center; justify-content: center"
 						:style="{
-							top: `${item.top}vw`,
-							left: checkMapFold ? `${item.left - 1.15}vw` : `${item.left}vw`,
-							width: `${item.width}vw`,
-							height: `${item.height}vh`,
+							top: `${item?.top}vw`,
+							left: checkMapFold ? `${item?.left - 1.15}vw` : `${item?.left}vw`,
+							width: `${item?.width}vw`,
+							height: `${item?.height}vh`,
 						}"
 						@click="selectStore(item)"
 					>
-						{{ item.title }}
+						<ul style="height: 100%">
+							<li
+								v-for="(el, index) in uniqueCompanies(item.companyList)"
+								:key="index"
+								style="letter-spacing: 0px !important; display: flex; align-items: center; height: 100%"
+							>
+								{{ el?.companyName }}
+							</li>
+						</ul>
 					</div>
 				</div>
-				<!-- 기타공용공간 좌표 추가해야함!! -->
+
+				<!-- 상사및입점//퍼블용 -->
 				<!-- <div
-					v-for="(item, idx) in etcs"
+					v-for="(item, idx) in stores"
 					:key="idx"
 					class="absolute font-normal leading-none text-center storeItem"
+					:class="{ active: selectedStore && selectedStore.id === item.id }"
 					style="
 						font-size: 0.2vw;
 						display: flex;
 						align-items: center;
 						justify-content: center;
 						letter-spacing: 0.1px !important;
+						word-break: keep-all;
+						background-color: rgba(255, 214, 0, 0.5);
 					"
 					:style="{
 						top: `${item.top}vw`,
@@ -94,69 +84,46 @@
 						width: `${item.width}vw`,
 						height: `${item.height}vh`,
 					}"
+					@click="selectStore(item)"
 				>
 					{{ item.title }}
 				</div> -->
+
+				<!-- 기타공용공간 좌표 추가해야함!! -->
+				<div
+					v-for="(item, idx) in etcs"
+					:key="idx"
+					class="absolute font-normal leading-none text-center storeItem etcIcon"
+					style="
+						font-size: 0.2vw;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						letter-spacing: 0.1px !important;
+						word-break: keep-all;
+					"
+					:style="{
+						top: `${item.top}vw`,
+						left: checkMapFold ? `${item.left - 1.15}vw` : `${item.left}vw`,
+						width: `1vw`,
+						height: `auto`,
+					}"
+				>
+					<img :src="filterEtcItem('facility', item.title)" :alt="item.title" class="w-fit" />
+				</div>
 			</PinchScrollZoom>
 		</div>
 
 		<div class="facility">
 			<div class="inner">
-				<div class="mx-6 hover:cursor-pointer btn_item" :class="{ active: selected }" @click="boxSelected('done')">
-					<div class="mb-[8px] icon">
-						<img src="@/assets/img/facility/icon_1.svg" alt="엘레베이터" class="w-fit" />
-					</div>
-					<p class="name text-[0.85vw]">엘레베이터</p>
-				</div>
-
-				<div class="mx-6 hover:cursor-pointer btn_item" @click="testpopup">
-					<div class="mb-[8px] icon">
-						<img src="@/assets/img/facility/icon_2.svg" alt="화장실" class="w-fit" />
-					</div>
-					<p class="name text-[0.85vw]">화장실</p>
-				</div>
-
-				<div class="mx-6 hover:cursor-pointer btn_item">
-					<div class="mb-[8px] icon">
-						<img src="@/assets/img/facility/icon_3.svg" alt="장애인화장실" class="w-fit" />
-					</div>
-					<p class="name text-[0.85vw]">장애인화장실</p>
-				</div>
-
-				<div class="mx-6 hover:cursor-pointer btn_item">
-					<div class="mb-[8px] icon">
-						<img src="@/assets/img/facility/icon_4.svg" alt="은행/ATM" class="w-fit" />
-					</div>
-					<p class="name text-[0.85vw]">은행/ATM</p>
-				</div>
-
-				<div class="mx-6 hover:cursor-pointer btn_item">
-					<div class="mb-[8px] icon">
-						<img src="@/assets/img/facility/icon_5.svg" alt="업무지원센터" class="w-fit" />
-					</div>
-					<p class="name text-[0.85vw]">업무지원센터</p>
-				</div>
-
-				<div class="mx-6 hover:cursor-pointer btn_item">
-					<div class="mb-[8px] icon">
-						<img src="@/assets/img/facility/icon_6.svg" alt="비상구" class="w-fit" />
-					</div>
-					<p class="name text-[0.85vw]">비상구</p>
-				</div>
-
-				<div class="mx-6 hover:cursor-pointer btn_item">
-					<div class="mb-[8px] icon">
-						<img src="@/assets/img/facility/icon_7.svg" alt="고객주차장" class="w-fit" />
-					</div>
-					<p class="name text-[0.85vw]">고객주차장</p>
-				</div>
-
-				<div class="mx-6 hover:cursor-pointer btn_item">
-					<div class="mb-[8px] icon">
-						<img src="@/assets/img/facility/icon_8.svg" alt="무인정산기" class="w-fit" />
-					</div>
-					<p class="name text-[0.85vw]">무인정산기</p>
-				</div>
+				<FacilityButton
+					v-for="(item, index) in facilityItems"
+					:key="index"
+					:icon="item.icon"
+					:label="item.label"
+					:active="selected === item.label"
+					@click="boxSelected(item.label)"
+				/>
 			</div>
 		</div>
 	</div>
@@ -179,22 +146,42 @@
 		cancelText="취소"
 		@confirm="handleConfirm"
 		@cancel="handleCancel"
+		:items="selectedStore"
 	>
-		<template #content>
-			<p>팝업내용.</p>
-		</template>
 	</Popup05>
 </template>
 
 <script>
-import { defineComponent, computed, ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
-import { useTitleEN } from '@/composables/useTitleEN'
-import { useMparkStore } from '@/store/mpark'
+import { defineComponent, computed, ref, watch, onMounted, onUnmounted, nextTick, reactive } from 'vue'
 import PinchScrollZoom from '@coddicat/vue-pinch-scroll-zoom'
+import FacilityButton from '@/components/customerkiosk/mpark/facilitybutton.vue'
+import { useTitleEN } from '@/composables/useTitleEN'
+import { useCustomerKioskStore } from '@/store/customerkioskStatus'
 import { useUtilities } from '@/utils/useUtilities'
-
-import { baseFloorFirst, towerFloorFirst, towerFloorSecond, towerFloorThird, towerEtcFloorFirst } from '@/data/tower.js'
-import { landFloorFirst, landEtcFloorFirst } from '@/data/land.js'
+import {
+	baseFloorFirst,
+	towerFloorFirst,
+	towerFloorSecond,
+	towerFloorThird,
+	towerEtcbaseFloorFirst,
+	towerEtcFloorFirst,
+	towerEtcFloorSecond,
+	towerEtcFloorThird,
+	towerEtcFloorFourth,
+	towerEtcFloorFifth,
+	towerEtcFloorSixth,
+	towerEtcFloorSeventh,
+	towerEtcFloorEighth,
+	towerEtcFloorNine,
+} from '@/data/tower.js'
+import {
+	landFloorFirst,
+	landFloorSecond,
+	landFloorAF,
+	landEtcFloorFirst,
+	landEtcFloorSecond,
+	landEtcFloorEtc,
+} from '@/data/land.js'
 import {
 	hubFloorFirst,
 	hubFloorSecond,
@@ -202,23 +189,27 @@ import {
 	hubEtcFloorFirst,
 	hubEtcFloorSecond,
 	hubEtcFloorThird,
+	hubEtcFloorFourth,
+	hubEtcFloorFifth,
+	hubEtcFloorSixth,
+	hubEtcFloorSeventh,
+	hubEtcFloorEighth,
+	hubEtcFloorNine,
 } from '@/data/hub.js'
-
-//예시
-// import { useProductsStore } from '@/stores/productsStore';
-// import { storeToRefs } from 'pinia';
 
 export default defineComponent({
 	name: 'CustomerkioskMpark',
 	components: {
 		PinchScrollZoom,
+		FacilityButton,
 	},
 	setup() {
 		const { titleEN } = useTitleEN()
-		const mparkStore = useMparkStore()
+		const customerKioskStore = useCustomerKioskStore()
 
-		const danjiTitle = computed(() => mparkStore.danjiTitle)
-		const floorTitle = computed(() => mparkStore.floorTitle)
+		const danjiTitle = computed(() => customerKioskStore.danjiTitle)
+		const floorTitle = computed(() => customerKioskStore.floorTitle)
+		const tab = computed(() => (danjiTitle.value === 'TOWER' ? 10 : danjiTitle.value === 'LAND' ? 11 : 18))
 
 		const { setImageSrc } = useUtilities()
 		const imageSrc = (folder, img) => setImageSrc(folder, img)
@@ -228,12 +219,45 @@ export default defineComponent({
 		const containerWidth = ref(1500)
 		const containerHeight = ref(500)
 		const checkMapFold = ref(false)
+		const selected = ref(true)
 		const selectedStore = ref(null) // 클릭된 매장을 저장
 
 		const isPopupVisible = ref(false)
 		const scale = ref(2)
 
 		const isLoaded = ref(false)
+
+		const listItems = ref(['매매상사', '지원시설', '음식점', '정비/세차/광택', '기타'])
+
+		const facilityItems = ref([
+			{ icon: 'icon_1', label: '엘레베이터' },
+			{ icon: 'icon_2', label: '화장실' },
+			{ icon: 'icon_3', label: '장애인화장실' },
+			{ icon: 'icon_4', label: '은행/ATM' },
+			{ icon: 'icon_5', label: '업무지원센터' },
+			{ icon: 'icon_6', label: '비상구' },
+			{ icon: 'icon_7', label: '고객주차장' },
+			{ icon: 'icon_8', label: '무인정산기' },
+		])
+
+		const filterEtcItem = (folder, title) => {
+			const item = facilityItems.value.find(x => x.label === title)
+			if (item) {
+				return setImageSrc(folder, item.icon)
+			}
+			return null
+		}
+
+		const tabData = reactive({
+			HUB: null,
+			LAND: null,
+			TOWER: null,
+		})
+		// const tabData = ref({
+		// 	TOWER: [],
+		// 	LAND: [],
+		// 	HUB: [],
+		// })
 
 		//부제목
 		const subTitleDataMap = {
@@ -262,8 +286,8 @@ export default defineComponent({
 			},
 			LAND: {
 				'1F': '자동차 매매 전시장1',
-				'2F': '자동차 매매 전시장1',
-				단지전체: '단지전체',
+				'2F': '자동차 매매 전시장2',
+				AF: '단지전체',
 			},
 		}
 		//단지&층별 맵핑
@@ -281,6 +305,8 @@ export default defineComponent({
 			},
 			LAND: {
 				'1F': landFloorFirst,
+				'2F': landFloorSecond,
+				AF: landFloorAF,
 			},
 		}
 		//공용지역 맵핑
@@ -289,12 +315,29 @@ export default defineComponent({
 				'1F': hubEtcFloorFirst,
 				'2F': hubEtcFloorSecond,
 				'3F': hubEtcFloorThird,
+				'4F': hubEtcFloorFourth,
+				'5F': hubEtcFloorFifth,
+				'6F': hubEtcFloorSixth,
+				'7F': hubEtcFloorSeventh,
+				'8F': hubEtcFloorEighth,
+				'9F': hubEtcFloorNine,
 			},
 			TOWER: {
-				B1: towerEtcFloorFirst,
+				B1: towerEtcbaseFloorFirst,
+				'1F': towerEtcFloorFirst,
+				'2F': towerEtcFloorSecond,
+				'3F': towerEtcFloorThird,
+				'4F': towerEtcFloorFourth,
+				'5F': towerEtcFloorFifth,
+				'6F': towerEtcFloorSixth,
+				'7F': towerEtcFloorSeventh,
+				'8F': towerEtcFloorEighth,
+				'9F': towerEtcFloorNine,
 			},
 			LAND: {
 				'1F': landEtcFloorFirst,
+				'2F': landEtcFloorSecond,
+				AF: landEtcFloorEtc,
 			},
 		}
 		const subTitle = computed(() => {
@@ -307,13 +350,26 @@ export default defineComponent({
 			return etcDataMap[danjiTitle.value]?.[floorTitle.value] || []
 		})
 
+		const filterStore = computed(() => {
+			return stores.value
+				.map(item1 => {
+					const matchingItem = tabData[danjiTitle.value]?.find(item2 => item2.officeCode === item1.id)
+					if (matchingItem) {
+						return {
+							...matchingItem,
+							width: item1.width,
+							top: item1.top,
+							left: item1.left,
+							height: item1.height,
+						}
+					}
+				})
+				.filter(Boolean)
+		})
+
 		const scalingHandler = e => {
 			console.log(e)
 		}
-
-		//예시
-		// const productsStore = useProductsStore();
-		// const { filteredProducts } = storeToRefs(productsStore);
 
 		const updateContainerDimensions = () => {
 			if (container.value) {
@@ -337,26 +393,45 @@ export default defineComponent({
 			},
 		)
 
-		onMounted(() => {
-			updateContainerDimensions()
-			window.addEventListener('resize', updateContainerDimensions)
-			//예시
-			//productsStore.fetchProducts();
+		onMounted(async () => {
+			try {
+				const [tower, land, hub] = await Promise.all([getStore(10), getStore(11), getStore(18)])
+
+				tabData.TOWER = tower
+				tabData.LAND = land
+				tabData.HUB = hub
+				// updateTabData('TOWER', tower)
+				// updateTabData('LAND', land)
+				// updateTabData('HUB', hub)
+
+				updateContainerDimensions()
+				window.removeEventListener('resize', updateContainerDimensions)
+			} catch (error) {
+				console.error('error', error)
+			}
 		})
 
-		onUnmounted(() => {
-			window.removeEventListener('resize', updateContainerDimensions)
-		})
+		const updateTabData = (key, newData) => {
+			tabData.value[key] = JSON.parse(JSON.stringify(newData))
+		}
 
 		const selectStore = val => {
 			if (val) {
+				isPopupVisible.value = true
 				console.log('상사정보', val)
 				selectedStore.value = val
 			}
 		}
-
-		const testpopup = e => {
-			isPopupVisible.value = true
+		// 중복 제거
+		const uniqueCompanies = companyList => {
+			const uniqueNames = new Set()
+			return companyList.filter(el => {
+				if (!uniqueNames.has(el.companyName)) {
+					uniqueNames.add(el.companyName)
+					return true
+				}
+				return false
+			})
 		}
 
 		//공통팝업용
@@ -372,9 +447,26 @@ export default defineComponent({
 
 		//이미지 로드완료
 		const onImageLoad = () => {
-			isLoaded.value = true;
+			isLoaded.value = true
 		}
 
+		const getStore = async params => {
+			const res = await customerKioskStore.fetchContractList(params)
+			return res.data
+		}
+
+		const boxSelected = box => {
+			if (box === 'done') {
+				selected.value = !selected.value
+			}
+		}
+
+		// const filterStoreCheck = () => {
+		// 	stores.value?.map(item1 => {
+		// 		const matchingItem = tabData[danjiTitle.value]?.find(item2 => item2.officeCode === item1.id)
+		// 		if (matchingItem) filterStore.value.push(matchingItem)
+		// 	})
+		// }
 
 		return {
 			titleEN,
@@ -387,34 +479,27 @@ export default defineComponent({
 			scale,
 			scalingHandler,
 			checkMapFold,
+			listItems,
+			facilityItems,
 			subTitle,
 			stores,
 			etcs,
+			selected,
 			selectedStore,
 			selectStore,
 			isPopupVisible,
-			testpopup,
 			handleConfirm,
 			handleCancel,
 			imageSrc,
 			isLoaded,
-			onImageLoad
-			//예시
-			// filteredProducts,
+			onImageLoad,
+			tab,
+			tabData,
+			filterStore,
+			boxSelected,
+			filterEtcItem,
+			uniqueCompanies,
 		}
-	},
-
-	data() {
-		return {
-			selected: true,
-		}
-	},
-	methods: {
-		boxSelected(box) {
-			if (box === 'done') {
-				this.selected = !this.selected
-			}
-		},
 	},
 })
 </script>
@@ -469,28 +554,6 @@ export default defineComponent({
 	.inner {
 		display: flex;
 	}
-	.btn_item {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		.icon {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			width: 2.7vw;
-			aspect-ratio: 1/1;
-			background-color: rgb(38, 38, 38, 0.8);
-			border-radius: 100%;
-			img {
-				max-width: 1.4vw;
-				height: auto;
-			}
-		}
-		.name {
-			font-size: 1.3vh;
-			color: #555;
-		}
-	}
 }
 
 .storeItem {
@@ -521,5 +584,21 @@ export default defineComponent({
 	background-size: 0.7vw 0.7vw;
 	background-repeat: no-repeat;
 	background-position: center;
+}
+
+.etcIcon {
+	cursor: none;
+	aspect-ratio: 1/1;
+	background-color: rgba(38, 38, 38, 0.8);
+	border-radius: 100%;
+	img {
+		max-width: 0.4vw;
+		height: auto;
+	}
+}
+.etcIcon {
+	&:hover {
+		cursor: auto;
+	}
 }
 </style>

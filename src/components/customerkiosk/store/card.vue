@@ -1,11 +1,12 @@
 <template>
 	<div class="card_store">
-		<img src="@/assets/img/store/card_default.png" alt="" />
+		<img v-if="item.imageUrl" :src="item.imageUrl" :alt="item?.companyName" />
+		<img v-else src="@/assets/img/store/card_default.png" :alt="item?.companyName" />
 		<div class="cont">
-			<p class="name flex items-center">(주) 프렌드파트너스</p>
+			<p class="name flex items-center">{{ item?.companyName }}</p>
 			<div class="btn_bar">
-				<button class="btn_detail">상세보기</button>
-				<button class="btn_positon">위치안내</button>
+				<button class="btn_detail" @click="searchStoreDetail(item)">상세보기</button>
+				<!-- <button class="btn_positon">위치안내</button> -->
 			</div>
 		</div>
 	</div>
@@ -14,6 +15,20 @@
 <script>
 export default {
 	name: 'CustomerKioskStoreCard',
+	props: {
+		item: {
+			type: Object,
+			default: null,
+		},
+	},
+	setup(props, { emit }) {
+		const searchStoreDetail = e => {
+			emit('selectCompany', e)
+		}
+		return {
+			searchStoreDetail,
+		}
+	},
 }
 </script>
 
@@ -45,11 +60,11 @@ export default {
 		.btn_bar {
 			display: flex;
 			justify-content: space-between;
-			padding: 1.4vw;
+			padding: 0.85vw;
 			button {
-				width: 48%;
+				width: 100%;
 				height: 3vh;
-				font-size: 1vh;
+				font-size: 0.75vw;
 				color: #fff;
 				border-radius: 4px;
 				&.btn_detail {

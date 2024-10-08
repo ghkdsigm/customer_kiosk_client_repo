@@ -3,13 +3,13 @@
 		<div class="boardInput bg-[#ffffff] 2xl:p-22 p-[1.45vw] pb-[1vw] h-[31vh]">
 			<h1 class="tit">DEALER SEARCH</h1>
 			<!-- <input type="text" ref="keyboardInput" placeholder="검색어를 입력하세요" readonly /> -->
-			<form class="max-w-[30vw] mx-auto relative top-[12vh]">
-				<div class="flex h-[7vh]">
+			<form class="max-w-[35vw] mx-auto relative top-[11vh]">
+				<div class="flex h-[8vh]">
 					<label for="search-dropdown" class="mb-2 text-[0.8vw] font-medium text-gray-900 sr-only">Your Email</label>
 					<button
 						id="dropdown-button"
 						data-dropdown-toggle="dropdown"
-						class="w-[6vw] flex justify-center bg-white flex-shrink-0 z-10 inline-flex items-center mr-[0.5vw] text-[0.8vw] font-medium text-center text-gray-900 border-[0.2vw] border-[#00B0B9] focus:ring-4 focus:outline-none focus:ring-gray-100 rounded-[0.2vw]"
+						class="w-[6.5vw] flex justify-center bg-white flex-shrink-0 z-10 inline-flex items-center mr-[0.5vw] text-[1vw] font-medium text-center text-gray-900 border-[0.2vw] border-[#00B0B9] focus:ring-4 focus:outline-none focus:ring-gray-100 rounded-[0.2vw]"
 						type="button"
 						@click="toggleDropdown"
 					>
@@ -31,17 +31,21 @@
 						</svg>
 					</button>
 					<!-- 드롭다운 메뉴 -->
-					<div v-if="isDropdownOpen" class="absolute left-0 top-full z-20 bg-white divide-y divide-gray-100 shadow-lg w-[6vw] rounded-[0.2vw] mt-0">
+					<div
+						v-if="isDropdownOpen"
+						class="absolute left-0 top-full z-20 bg-white divide-y divide-gray-100 shadow-lg w-[6vw] rounded-[0.2vw] mt-0"
+					>
 						<ul class="text-sm text-gray-700">
-						<li @click="selectOption('종사원명')">
-							<button type="button" class="text-[0.8vw] block w-full text-left px-4 py-[2vh] hover:bg-gray-100">종사원명</button>
-						</li>
-						<li @click="selectOption('상사명')">
-							<button type="button" class="text-[0.8vw] block w-full text-left px-4 py-[2vh] hover:bg-gray-100">상사명</button>
-						</li>
-						<li @click="selectOption('위치명')">
-							<button type="button" class="text-[0.8vw] block w-full text-left px-4 py-[2vh] hover:bg-gray-100">위치명</button>
-						</li>
+							<li @click="selectOption('종사원명')">
+								<button type="button" class="text-[0.8vw] block w-full text-left px-4 py-[2vh] hover:bg-gray-100">
+									종사원명
+								</button>
+							</li>
+							<li @click="selectOption('상사명')">
+								<button type="button" class="text-[0.8vw] block w-full text-left px-4 py-[2vh] hover:bg-gray-100">
+									상사명
+								</button>
+							</li>
 						</ul>
 					</div>
 					<div class="relative w-full">
@@ -49,13 +53,13 @@
 							type="search"
 							ref="keyboardInput"
 							id="search-dropdown"
-							class="block p-[0.8vw] w-full h-full z-20 text-[0.8vw] text-gray-900 rounded-[0.2vw] border-[0.2vw] border border-[#00B0B9] focus:ring-blue-500 focus:border-[#00B0B9] placeholder:text-gray-900"
+							class="block p-[0.8vw] w-full h-full z-20 text-[1vw] text-gray-900 rounded-[0.2vw] border-[0.2vw] border border-[#00B0B9] focus:ring-blue-500 focus:border-[#00B0B9] placeholder:text-gray-900"
 							placeholder="검색어를 입력하세요"
 							readonly
 							required
 						/>
 						<button
-							type="submit"
+							type="button"
 							class="w-[7vw] absolute flex justify-center items-center top-0 end-0 p-2.5 text-[1vw] font-medium h-full text-white bg-[#00B0B9] rounded-[0.2vw] border border-[#00B0B9] hover:bg-[#169171] focus:ring-4 focus:outline-none focus:bg-[#169171]"
 							@click="onEnter(getText())"
 						>
@@ -84,13 +88,26 @@
 			<div ref="keyboardZone" class="virtualKeyboard flex justify-center pt-[2.5vh] h-full"></div>
 		</div>
 	</div>
+	<Popup01
+		v-model:visible="isPopupVisible"
+		title="재검색"
+		confirmText="다시 검색하기"
+		ico="replay.svg"
+		@confirm="handleConfirm"
+		@cancel="handleCancel"
+	>
+		<template #content>
+			<p>{{ target }}</p>
+			<p>다시 검색해주세요.</p>
+		</template>
+	</Popup01>
 </template>
 
 <script>
-import { ref, onMounted, nextTick } from 'vue'
+import { ref, onMounted, nextTick, computed } from 'vue'
 import Hangul from 'hangul-js'
 import { useCommonStore } from '@/store/common'
-import { useMparkStore } from '@/store/mpark'
+import { useCustomerKioskStore } from '@/store/customerkioskStatus'
 
 export default {
 	name: 'KeyboardCustomKeyboard',
@@ -100,10 +117,14 @@ export default {
 		const nowlang = ref('koNormal')
 		const charlist = ref([])
 		const keydiv = ref({})
-		const mparkStore = useMparkStore()
+		const customerKioskStore = useCustomerKioskStore()
 
 		const selectedOption = ref('종사원명')
 		const isDropdownOpen = ref(false)
+
+		//공통팝업용
+		const isPopupVisible = ref(false)
+		const target = ref(null)
 
 		const form = {
 			koNormal: [
@@ -142,29 +163,29 @@ export default {
 		})
 
 		function initKeyboard() {
-			const zone = keyboardZone.value;
-			const input = keyboardInput.value;
-			const specialKeys = ['shift', 'backspace', '한/영', '초기화', '뒤로', 'space'];
-			const specialKeysEnter = ['검색'];
+			const zone = keyboardZone.value
+			const input = keyboardInput.value
+			const specialKeys = ['shift', 'backspace', '한/영', '초기화', '뒤로', 'space']
+			const specialKeysEnter = ['검색']
 
 			for (let index = 0; index < Object.keys(form).length; index++) {
-				keydiv.value[Object.keys(form)[index]] = document.createElement('div');
+				keydiv.value[Object.keys(form)[index]] = document.createElement('div')
 				keydiv.value[Object.keys(form)[index]].style.cssText = `
 					position: absolute;
 					align: center;
 					visibility: hidden;
 					font-size: 2vw;
-				`;
+				`
 				for (let i = 0; i < form[Object.keys(form)[index]].length; i++) {
-					var keyline = document.createElement('table');
+					var keyline = document.createElement('table')
 					keyline.style.cssText = `
 						width: 100%;
 						text-align: center;
 						margin: 0 0 1.35vh 0;
-					`;
+					`
 					for (let j = 0; j < form[Object.keys(form)[index]][i].length; j++) {
-						var key = document.createElement('th');
-						key.className = 'keybutton';
+						var key = document.createElement('th')
+						key.className = 'keybutton'
 						key.style.cssText = `
 							box-shadow: 0px 0.05vw 0px 0px #00000059;
 							background: #fff;
@@ -177,11 +198,11 @@ export default {
 							padding: 1.1vw 1.7vw;
 							margin: 0 0.35vw;
 							min-width: 3vw;
-						`;
+						`
 
 						// 설정할 key의 text를 가져온다.
-						const keyText = form[Object.keys(form)[index]][i][j];
-						key.innerText = keyText;
+						const keyText = form[Object.keys(form)[index]][i][j]
+						key.innerText = keyText
 
 						if (specialKeys.includes(keyText)) {
 							key.style.cssText = `
@@ -196,7 +217,7 @@ export default {
 								padding: 1.1vw 1.7vw;
 								margin: 0 0.35vw;
 								min-width: 3vw;
-							`;
+							`
 						}
 
 						if (specialKeysEnter.includes(keyText)) {
@@ -213,7 +234,7 @@ export default {
 								padding: 1.1vw 1.7vw;
 								margin: 0 0.35vw;
 								min-width: 3vw;
-							`;
+							`
 						}
 
 						// space 키의 경우 너비를 조정
@@ -230,19 +251,18 @@ export default {
 								padding: 1.1vw 1.7vw;
 								margin: 0 0.35vw;
 								width: 15vw; /* 공간 키의 너비를 크게 설정 */
-							`;
+							`
 						}
 
-						key.addEventListener('click', keyfun);
-						keyline.appendChild(key);
+						key.addEventListener('click', keyfun)
+						keyline.appendChild(key)
 					}
-					keydiv.value[Object.keys(form)[index]].appendChild(keyline);
+					keydiv.value[Object.keys(form)[index]].appendChild(keyline)
 				}
-				zone.appendChild(keydiv.value[Object.keys(form)[index]]);
+				zone.appendChild(keydiv.value[Object.keys(form)[index]])
 			}
-			keydiv.value[nowlang.value].style.visibility = 'visible';
+			keydiv.value[nowlang.value].style.visibility = 'visible'
 		}
-
 
 		function keyfun(event) {
 			const key = event.target.innerText
@@ -301,17 +321,37 @@ export default {
 			keydiv.value[nowlang.value].style.visibility = 'visible'
 		}
 
-		function onESC() {
-		}
+		function onESC() {}
 
-		function onEnter(text) {
-			if (text !== '') {
-				alert(`검색어: ${text}`)
+		async function onEnter(text) {
+			if (text.length < 2) {
+				isPopupVisible.value = true
 				resetKeyboard()
-				mparkStore.setKeyBoardUse(false)
+				openPop('내용')
+
+				return
 			} else {
-				alert(`검색어를 입력해주세요.`)
-				mparkStore.setKeyBoardUse(false)
+				if (selectedOption.value === '종사원명') {
+					customerKioskStore.resetEmployeeShop('shop')
+					const res = await customerKioskStore.fetchEmployee(encodeURIComponent(text))
+					if (res.data.length === 0) {
+						isPopupVisible.value = true
+						resetKeyboard()
+						openPop('딜러')
+					} else {
+						customerKioskStore.setKeyBoardUse(false)
+					}
+				} else {
+					customerKioskStore.resetEmployeeShop('employee')
+					const res = await customerKioskStore.fetchShop(encodeURIComponent(text))
+					if (res.data.length === 0) {
+						isPopupVisible.value = true
+						resetKeyboard()
+						openPop('상사')
+					} else {
+						customerKioskStore.setKeyBoardUse(false)
+					}
+				}
 			}
 		}
 
@@ -333,6 +373,28 @@ export default {
 			isDropdownOpen.value = false
 		}
 
+		const openPop = val => {
+			if (val === '딜러') {
+				target.value = '딜러 검색 결과가 없습니다.'
+			} else if (val === '상사') {
+				target.value = '상사 검색 결과가 없습니다.'
+			} else {
+				target.value = '최소 2글자 이상 입력하신후'
+			}
+			isPopupVisible.value = true
+		}
+
+		//공통팝업용
+		const handleConfirm = () => {
+			console.log('확인 버튼이 클릭되었습니다.')
+			isPopupVisible.value = false // 팝업 닫기
+		}
+		//공통팝업용
+		const handleCancel = () => {
+			console.log('취소 버튼이 클릭되었습니다.')
+			isPopupVisible.value = false // 팝업 닫기
+		}
+
 		return {
 			keyboardInput,
 			keyboardZone,
@@ -350,7 +412,12 @@ export default {
 			selectedOption,
 			isDropdownOpen,
 			toggleDropdown,
-			selectOption
+			selectOption,
+			isPopupVisible,
+			handleConfirm,
+			handleCancel,
+			target,
+			openPop,
 		}
 	},
 }

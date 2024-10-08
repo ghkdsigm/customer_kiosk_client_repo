@@ -2,7 +2,9 @@
 <template>
 	<div v-if="visible" class="fixed inset-0 flex items-center justify-center z-10">
 		<div class="absolute inset-0 bg-gray-900 opacity-50"></div>
-		<div class="bg-white flex rounded-lg shadow-lg p-0 w-[62.5vw] max-w-[62.5vw] h-[50.36vh] relative z-10">
+		<div
+			class="bg-white flex rounded-lg shadow-lg p-0 w-[62.5vw] max-w-[62.5vw] h-[50.36vh] relative z-10 bottom-[3vh]"
+		>
 			<!-- Swiper 슬라이더 전체 팝업을 슬라이드로 구현 -->
 			<swiper
 				:slides-per-view="1"
@@ -13,38 +15,35 @@
 					prevEl: '.arrowLeft',
 				}"
 			>
-				<swiper-slide>
+				<swiper-slide v-for="(item, idx) in items.companyList" :key="idx">
 					<!-- 첫 번째 팝업 내용 -->
 					<div class="flex w-full h-full">
-						<div class="w-3/5 h-full bg-gray-200">
-							<img
-								src="@/assets/img/store/storeTestImg.png"
-								alt="스토어 테스트 이미지 1"
-								class="w-full h-full block z-10"
-							/>
+						<div class="w-3/5 h-full bg-gray-200 flex justify-center items-center">
+							<img v-if="item.imageUrl" :src="item.imageUrl" :alt="item.companyName" class="w-full h-full block z-10" />
+							<img v-else src="@/assets/img/emptyThumb.svg" :alt="item.companyName" style="width: 7vw" />
 						</div>
 						<div class="w-2/5 h-full">
 							<div class="-w-full h-full text-center flex flex-col items-center justify-center">
 								<div class="w-full h-full p-[2vw] flex flex-col justify-center items-center">
 									<p
-										class="text-[0.5w] text-[#00B0B9] py-[0.3vw] px-[0.8vw] rounded-full border border-[#00B0B9] font-normal"
+										class="text-[0.5w] text-[#00B0B9] py-[0.3vw] mb-[0.5vh] px-[0.8vw] rounded-full border border-[#00B0B9] font-normal"
 									>
 										STORE
 									</p>
-									<h3 class="mb-[1.6vw] text-[1.6vw]">브이아이피 광택</h3>
+									<h3 class="mb-[1.6vw] text-[1.6vw]">{{ item?.companyName }}</h3>
 									<div class="w-full bg-[#F8F8F8] p-[2vw] rounded-sm">
 										<ul class="leading-[2.1vw]">
-											<li class="flex text-[0.9vw]">
+											<li class="flex text-[0.9vw]" v-if="item.floorName">
 												<span class="font-bold pr-[2vw]">매장위치</span>
-												<span class="font-normal">1F</span>
+												<span class="font-normal">{{ item.floorName }}</span>
 											</li>
-											<li class="flex text-[0.9vw]">
+											<li class="flex text-[0.9vw]" v-if="item.tel">
 												<span class="font-bold pr-[2vw]">전화번호</span>
-												<span class="font-normal">010-1234-1234</span>
+												<span class="font-normal">{{ item.tel }}</span>
 											</li>
 										</ul>
 									</div>
-									<a
+									<!-- <a
 										href="#"
 										class="mt-[1.6vw] block w-[11.5vw] h-[2.65vw] rounded bg-[#00B0B9] px-3 py-2 font-semibold text-[0.9vw] text-white shadow-sm flex justify-center items-center"
 										><img
@@ -52,53 +51,7 @@
 											alt="위치안내 아이콘 이미지"
 											class="w-[1.4vw] h-[1.4vw] pr-[0.5vw] block z-10"
 										/>위치안내</a
-									>
-								</div>
-							</div>
-						</div>
-					</div>
-				</swiper-slide>
-
-				<swiper-slide>
-					<!-- 두 번째 팝업 내용 -->
-					<div class="flex w-full h-full">
-						<div class="w-3/5 h-full bg-gray-200">
-							<img
-								src="@/assets/img/store/storeTestImg.png"
-								alt="스토어 테스트 이미지 2"
-								class="w-full h-full block z-10"
-							/>
-						</div>
-						<div class="w-2/5 h-full">
-							<div class="-w-full h-full text-center flex flex-col items-center justify-center">
-								<div class="w-full h-full p-[2vw] flex flex-col justify-center items-center">
-									<p
-										class="text-[0.5w] text-[#00B0B9] py-[0.3vw] px-[0.8vw] rounded-full border border-[#00B0B9] font-normal"
-									>
-										STORE
-									</p>
-									<h3 class="mb-[1.6vw] text-[1.6vw]">VIP 카 서비스</h3>
-									<div class="w-full bg-[#F8F8F8] p-[2vw] rounded-sm">
-										<ul class="leading-[2.1vw]">
-											<li class="flex text-[0.9vw]">
-												<span class="font-bold pr-[2vw]">매장위치</span>
-												<span class="font-normal">2F</span>
-											</li>
-											<li class="flex text-[0.9vw]">
-												<span class="font-bold pr-[2vw]">전화번호</span>
-												<span class="font-normal">010-9876-5432</span>
-											</li>
-										</ul>
-									</div>
-									<a
-										href="#"
-										class="mt-[1.6vw] block w-[11.5vw] h-[2.65vw] rounded bg-[#00B0B9] px-3 py-2 font-semibold text-[0.9vw] text-white shadow-sm flex justify-center items-center"
-										><img
-											src="@/assets/img/store/near_me.svg"
-											alt="위치안내 아이콘 이미지"
-											class="w-[1.4vw] h-[1.4vw] pr-[0.5vw] block z-10"
-										/>위치안내</a
-									>
+									> -->
 								</div>
 							</div>
 						</div>
@@ -109,7 +62,7 @@
 		<!-- 닫기 버튼 -->
 		<button
 			@click="close"
-			class="absolute bg-white flex items-center z-50 top-[78vh] justify-center text-gray-400 hover:text-gray-600 w-[2.7vw] h-[2.7vw] rounded-full"
+			class="absolute bg-white flex items-center z-50 top-[75.5vh] justify-center text-gray-400 hover:text-gray-600 w-[2.7vw] h-[2.7vw] rounded-full"
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -164,6 +117,10 @@ export default defineComponent({
 		visible: {
 			type: Boolean,
 			default: false,
+		},
+		items: {
+			type: Object,
+			default: {},
 		},
 	},
 	emits: ['confirm', 'cancel', 'update:visible'],

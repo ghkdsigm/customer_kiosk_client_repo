@@ -1,29 +1,80 @@
 <template>
-	<div class="card_store">
-		<img src="https://img.etoday.co.kr/pto_db/2020/09/20200915225107_1511263_506_582.jpg" class="max-h-[26vh]" alt="" />
+	<div class="card_store" v-if="checkItems === '1'">
+		<!-- checkItems: '1'일때 종사원  -->
+		<img v-if="item.imageUrl" :src="item.imageUrl" class="max-h-[26vh]" :alt="`${item?.empName} 이미지`" />
+		<img v-else src="@/assets/img/emptyThumb.svg" style="width: 7vw; margin: 0 auto" :alt="`${item?.empName} 이미지`" />
 		<div class="cont">
-			<p class="name flex items-center text-[1.25vw]">설인아</p>
-			<div class="py-[1vh] text-center">
-				<div class="my-[1vh]">
+			<p class="name flex items-center text-[1.25vw]">{{ item?.empName }}</p>
+			<div class="py-[1vh] text-center h-[15.5vh]">
+				<div class="my-[1vh]" v-if="item.driveNo">
 					<p class="text-[#9E9E9E] text-[0.85vw]">사원증번호</p>
-					<p class="text-[#262626] text-[0.95vw]">IM20-01597</p>
+					<p class="text-[#262626] text-[0.95vw]">{{ item.driveNo }}</p>
 				</div>
-				<div class="my-[1vh]">
+				<div class="my-[1vh]" v-if="item.companyName">
 					<p class="text-[#9E9E9E] text-[0.85vw]">상사약명</p>
-					<p class="text-[#262626] text-[0.95vw]">파크모터스</p>
+					<p class="text-[#262626] text-[0.95vw]">{{ item.companyName }}</p>
 				</div>
 			</div>
 			<div class="btn_bar">
-				<button class="btn_positon text-[0.95vw]">VIew Profile</button>
+				<button class="btn_positon text-[0.75vw]" @click="selectCompany(item)">VIew Profile</button>
+			</div>
+		</div>
+	</div>
+	<div class="card_store" v-else>
+		<img v-if="item.imageUrl" :src="item.imageUrl" class="max-h-[26vh]" :alt="`${item?.companyName} 이미지`" />
+		<img
+			v-else
+			src="@/assets/img/emptyThumb.svg"
+			style="width: 7vw; margin: 0 auto"
+			:alt="`${item?.companyName} 이미지`"
+		/>
+		<div class="cont">
+			<p class="name flex items-center text-[1.25vw]">{{ item?.companyName }}</p>
+			<div class="py-[1vh] text-center h-[15.5vh]">
+				<div class="my-[1vh]" v-if="item.driveNo">
+					<p class="text-[#9E9E9E] text-[0.85vw]">사원증번호</p>
+					<p class="text-[#262626] text-[0.95vw]">{{ item.driveNo }}</p>
+				</div>
+				<div class="my-[1vh]" v-if="item.companyName">
+					<p class="text-[#9E9E9E] text-[0.85vw]">상사약명</p>
+					<p class="text-[#262626] text-[0.95vw]">{{ item.companyName }}</p>
+				</div>
+			</div>
+			<div class="btn_bar">
+				<button class="btn_positon text-[0.75vw]" @click="selectCompany(item)">View Profile</button>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script>
-export default {
+import { defineComponent, ref } from 'vue'
+export default defineComponent({
 	name: 'CustomerKioskEmployeeCard',
-}
+	props: {
+		EmployeeCard: {
+			type: Number,
+			default: 0,
+		},
+		item: {
+			type: Object,
+			default: null,
+		},
+		checkItems: {
+			type: String,
+			default: '0',
+		},
+	},
+	setup(props, { emit }) {
+		const selectCompany = val => {
+			emit('selectCompany', val)
+		}
+
+		return {
+			selectCompany,
+		}
+	},
+})
 </script>
 
 <style lang="scss" scoped>
@@ -34,8 +85,10 @@ export default {
 	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
+	background: #d9d9d9;
 	img {
 		width: 100%;
+		height: 26vh;
 	}
 	.cont {
 		flex: 1;
@@ -50,6 +103,8 @@ export default {
 			background: #f8f8f8;
 			text-align: center;
 			justify-content: center;
+			height: 6vh;
+			min-height: 6vh;
 		}
 		.btn_bar {
 			display: flex;
@@ -58,7 +113,6 @@ export default {
 			button {
 				width: 100%;
 				height: 3vh;
-				font-size: 1vh;
 				color: #fff;
 				border-radius: 4px;
 				&.btn_detail {

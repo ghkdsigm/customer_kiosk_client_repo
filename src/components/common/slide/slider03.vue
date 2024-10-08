@@ -18,12 +18,9 @@
 				:modules="modules"
 				class="mySwiper2"
 			>
-				<swiper-slide><img src="@/assets/img/search/car01.png" /></swiper-slide>
-				<swiper-slide><img src="@/assets/img/search/noImg.png" /></swiper-slide>
-				<swiper-slide><img src="@/assets/img/search/noImg.png" /></swiper-slide>
-				<swiper-slide><img src="@/assets/img/search/noImg.png" /></swiper-slide>
-				<swiper-slide><img src="@/assets/img/search/noImg.png" /></swiper-slide>
-				<swiper-slide><img src="@/assets/img/search/noImg.png" /></swiper-slide>
+				<swiper-slide v-for="(item, idx) in items" :key="idx"
+					><img :src="replaceUrlSegment(item, 'mpark_test', 'mpark')"
+				/></swiper-slide>
 				<!-- 추가 이미지들 -->
 			</swiper>
 			<button class="arrowLeft arrow z-10">
@@ -50,12 +47,9 @@
 			:direction="'vertical'"
 			class="mySwiper"
 		>
-			<swiper-slide class="pl-[0vw]"><img src="@/assets/img/search/car01.png" /></swiper-slide>
-			<swiper-slide class="pl-[0vw]"><img src="@/assets/img/search/noImg.png" /></swiper-slide>
-			<swiper-slide class="pl-[0vw]"><img src="@/assets/img/search/noImg.png" /></swiper-slide>
-			<swiper-slide class="pl-[0vw]"><img src="@/assets/img/search/noImg.png" /></swiper-slide>
-			<swiper-slide class="pl-[0vw]"><img src="@/assets/img/search/noImg.png" /></swiper-slide>
-			<swiper-slide class="pl-[0vw]"><img src="@/assets/img/search/noImg.png" /></swiper-slide>
+			<swiper-slide v-for="(item, idx) in items" :key="idx" class="pl-[0vw]"
+				><img :src="replaceUrlSegment(item, 'mpark_test', 'mpark')"
+			/></swiper-slide>
 			<!-- 추가 이미지들 -->
 			<div class="verticalArrowWrap">
 				<button class="arrowLeft02 arrow02 z-10">
@@ -89,6 +83,7 @@ export default {
 		SwiperSlide,
 	},
 	name: 'Slider03',
+	props: { items: { type: Array, default: [] } },
 	setup() {
 		const thumbsSwiper = ref(null)
 
@@ -97,10 +92,15 @@ export default {
 			thumbsSwiper.value = swiper
 		}
 
+		const replaceUrlSegment = (url, oldSegment, newSegment) => {
+			return url.replace(oldSegment, newSegment)
+		}
+
 		return {
 			thumbsSwiper,
 			setThumbsSwiper,
 			modules: [FreeMode, Navigation, Thumbs],
+			replaceUrlSegment,
 		}
 	},
 }
@@ -183,7 +183,7 @@ export default {
 	.swiper-slide {
 		width: 100%; /* 세로 슬라이드의 넓이 */
 		//height: calc(100% / 3); /* 세로 슬라이드의 높이를 3개로 나눔 */
-		height: 13vh !important;
+		//height: 13vh !important;
 		opacity: 0.4;
 
 		&.swiper-slide-thumb-active {

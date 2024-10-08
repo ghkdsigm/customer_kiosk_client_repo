@@ -121,7 +121,7 @@ export const sideAreaSearch = [
 				to: '',
 			},
 			{
-				title: '단지전체',
+				title: 'AF',
 				to: '',
 			},
 		],

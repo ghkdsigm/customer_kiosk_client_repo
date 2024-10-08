@@ -9,8 +9,12 @@
 		</div>
 
 		<div class="swiper_inner inner text-[1.05vw]">
-			<p class="font-medium text-[1.05vw]  mb-[1.2vw]">검색하신 딜러는 <span class="text-[#00B0B9]">총 8명</span> 입니다.</p>
+			<p class="font-medium text-[1.05vw] mb-[1.2vw]">
+				검색하신 {{ checkItems === '1' ? '딜러' : '상사' }}는
+				<span class="text-[#00B0B9]">총 {{ items?.length }}{{ checkItems === '1' ? '명' : '개' }}</span> 입니다.
+			</p>
 			<swiper
+				v-if="items?.length"
 				:slidesPerView="'5'"
 				:spaceBetween="20"
 				:slides-per-group="10"
@@ -22,8 +26,13 @@
 				:modules="modules"
 				class="mySwiper"
 			>
-				<swiper-slide v-for="(item, idx) in 45" :key="idx"><EmployeeCard /></swiper-slide>
+				<swiper-slide v-for="(item, idx) in items" :key="idx"
+					><EmployeeCard :checkItems="checkItems" :item="item" @selectCompany="selectCompany"
+				/></swiper-slide>
 			</swiper>
+			<div class="w-full h-[40vh] flex justify-center items-center relative" v-else>
+				검색하신 내용이 존재하지않습니다.
+			</div>
 			<button class="arrowLeft arrow z-10">
 				<img src="@/assets/img/icn/slider_left.svg" alt="left" />
 			</button>
@@ -32,12 +41,23 @@
 			</button>
 		</div>
 	</div>
+	<Popup09
+		v-model:visible="isPopupVisible"
+		title="팝업 제목"
+		confirmText="확인"
+		cancelText="취소"
+		@confirm="handleConfirm"
+		@cancel="handleCancel"
+		:items="selectedEmployee ? selectedEmployee : selectedShop"
+		:type="selectedEmployee ? 'employee' : 'shop'"
+	>
+	</Popup09>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, computed, ref, onUnmounted } from 'vue'
 import { useTitleEN } from '@/composables/useTitleEN'
-import { useMparkStore } from '@/store/mpark'
+import { useCustomerKioskStore } from '@/store/customerkioskStatus'
 import EmployeeCard from '@/components/customerkiosk/employee/card.vue'
 
 // Import Swiper Vue.js components
@@ -62,15 +82,65 @@ export default defineComponent({
 
 	setup() {
 		const { titleEN } = useTitleEN()
-		const mparkStore = useMparkStore()
+		const customerKioskStore = useCustomerKioskStore()
+		const isPopupVisible = ref(false)
+		const selectedEmployee = ref(null)
+		const selectedShop = ref(null)
+		const checkItems = computed(() =>
+			Array.isArray(customerKioskStore.employeesList.data)
+				? '1'
+				: Array.isArray(customerKioskStore.shopList.data)
+					? '2'
+					: '0',
+		)
+		const items = computed(() => {
+			if (Array.isArray(customerKioskStore.employeesList.data)) {
+				return customerKioskStore.employeesList.data
+			} else if (Array.isArray(customerKioskStore.shopList.data)) {
+				return customerKioskStore.shopList.data
+			} else {
+				return []
+			}
+		})
 
 		const keyboardShow = () => {
-			mparkStore.setKeyBoardUse(true)
+			customerKioskStore.setKeyBoardUse(true)
 		}
 
+		const selectCompany = num => {
+			isPopupVisible.value = true
+			if (Object.keys(num).includes('driveNo')) {
+				selectedEmployee.value = num
+			} else {
+				selectedShop.value = num
+			}
+		}
+
+		//공통팝업용
+		const handleConfirm = () => {
+			console.log('확인 버튼이 클릭되었습니다.')
+			isPopupVisible.value = false // 팝업 닫기
+		}
+		//공통팝업용
+		const handleCancel = () => {
+			console.log('취소 버튼이 클릭되었습니다.')
+			isPopupVisible.value = false // 팝업 닫기
+		}
+
+		onUnmounted(() => {
+			customerKioskStore.setKeyBoardUse(true)
+		})
+
 		return {
+			checkItems,
 			titleEN,
 			keyboardShow,
+			selectedEmployee,
+			isPopupVisible,
+			handleConfirm,
+			handleCancel,
+			selectedEmployee,
+			selectedShop,
 			modules: [Navigation, Grid, Pagination],
 			pagination: {
 				clickable: true,
@@ -78,6 +148,8 @@ export default defineComponent({
 					return '<span class="' + className + '">' + (index + 1) + '</span>'
 				},
 			},
+			items,
+			selectCompany,
 		}
 	},
 })

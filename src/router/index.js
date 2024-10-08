@@ -30,8 +30,54 @@ const router = createRouter({
 	],
 })
 
-console.log(CustomerKioskRoutes) // 배열이 제대로 출력되는지 확인
-console.log(InOutKioskKioskRoutes) // 배열이 제대로 출력되는지 확인
-console.log(PerformanceStatusRoutes) // 배열이 제대로 출력되는지 확인
+// 경로 목록 정의
+const customerKioskPaths = [
+	'/customerkiosk',
+	'/customerkiosk/mpark',
+	'/customerkiosk/store',
+	'/customerkiosk/employee',
+	'/customerkiosk/searchcar',
+	'/customerkiosk/searchcarmanufacturer',
+	'/customerkiosk/searchcarnumber',
+	'/customerkiosk/carsearchresults',
+	'/customerkiosk/news',
+]
+const perfomances = 'introperformancestatus'
+const inout = '/inoutkiosk'
+
+// 전체화면 모드 요청 함수
+const requestFullscreen = () => {
+	const videoElement = document.documentElement
+	const requestFullscreenMethods = [
+		videoElement.requestFullscreen,
+		videoElement.mozRequestFullScreen,
+		videoElement.webkitRequestFullscreen,
+		videoElement.msRequestFullscreen,
+	]
+
+	for (const method of requestFullscreenMethods) {
+		if (method) {
+			method.call(videoElement)
+			break
+		}
+	}
+}
+
+router.beforeEach((to, from, next) => {
+	console.log('to', to.name)
+	console.log('customerKioskPaths.includes(to.path)', perfomances === to.name)
+
+	// 전체화면 모드 전환 조건
+	if (
+		(customerKioskPaths.includes(to.path) && !document.fullscreenElement) ||
+		perfomances === to.name ||
+		inout.includes(to.path)
+	) {
+		requestFullscreen()
+	}
+
+	// 다음 단계로 진행
+	next()
+})
 
 export default router

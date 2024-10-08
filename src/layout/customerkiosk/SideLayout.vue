@@ -37,13 +37,13 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 //import router from '../router'
 import SideMenu from '@/components/layout/appbar/sidemenu.vue'
 import Search from '@/components/common/keyboard/customKeyboard.vue'
 import { useRoute } from 'vue-router'
 import { useCommonStore } from '@/store/common'
-import { useMparkStore } from '@/store/mpark'
+import { useCustomerKioskStore } from '@/store/customerkioskStatus'
 import { sideAreaSearch } from '@/data/common'
 
 export default {
@@ -64,8 +64,8 @@ export default {
 		const commonStore = useCommonStore()
 		//const routes = ref([])
 
-		const mparkStore = useMparkStore()
-		const keboardUse = computed(() => mparkStore.keboardUse)
+		const customerKioskStore = useCustomerKioskStore()
+		const keboardUse = computed(() => customerKioskStore.keboardUse)
 
 		//Side전용
 		const sideItems = ref(sideAreaSearch)
@@ -89,6 +89,8 @@ export default {
 		}
 
 		onMounted(() => {})
+
+		onUnmounted(() => {})
 
 		return {
 			// routes,

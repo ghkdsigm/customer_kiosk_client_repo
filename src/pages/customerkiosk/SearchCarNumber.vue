@@ -28,13 +28,13 @@
 				<div class="flex w-1/2 justify-center items-center mx-[1vw]">
 					<div class="rounded-lg bg-[#F0F0F0] w-full h-full p-[3vw] flex gap-8">
 						<div class="w-[21vw]">
-							<div class="grid grid-cols-3 gap-3 h-full">
+							<div class="grid grid-cols-3 gap-4 h-full">
 								<!-- 1, 2, 3 -->
 								<button
 									v-for="number in [1, 2, 3]"
 									:key="number"
 									@click="inputDigit(number)"
-									class="keyButton w-full h-full flex items-center justify-center bg-white text-[#262626] text-[1.15vw] font-semibold rounded-md hover:bg-gray-50 shadow-[0px_1px_0px_0px_#00000059]"
+									class="keyButton w-full h-full flex items-center justify-center bg-white text-[#262626] text-[1.5vw] font-semibold rounded-md hover:bg-gray-50 shadow-[0px_1px_0px_0px_#00000059]"
 								>
 									{{ number }}
 								</button>
@@ -44,7 +44,7 @@
 									v-for="number in [4, 5, 6]"
 									:key="number"
 									@click="inputDigit(number)"
-									class="keyButton w-full h-full flex items-center justify-center bg-white text-[#262626] text-[1.15vw] font-semibold rounded-md hover:bg-gray-50 shadow-[0px_1px_0px_0px_#00000059]"
+									class="keyButton w-full h-full flex items-center justify-center bg-white text-[#262626] text-[1.5vw] font-semibold rounded-md hover:bg-gray-50 shadow-[0px_1px_0px_0px_#00000059]"
 								>
 									{{ number }}
 								</button>
@@ -55,7 +55,7 @@
 									:key="number"
 									@click="inputDigit(number)"
 									v-touch-click
-									class="keyButton w-full h-full flex items-center justify-center bg-white text-[#262626] text-[1.15vw] font-semibold rounded-md hover:bg-gray-50 shadow-[0px_1px_0px_0px_#00000059]"
+									class="keyButton w-full h-full flex items-center justify-center bg-white text-[#262626] text-[1.5vw] font-semibold rounded-md hover:bg-gray-50 shadow-[0px_1px_0px_0px_#00000059]"
 								>
 									{{ number }}
 								</button>
@@ -64,47 +64,47 @@
 								<button
 									@click="deleteDigit"
 									v-touch-click
-									class="keyButton w-full h-full flex items-center justify-center bg-[#E4E4E4] text-[#262626] text-[1.15vw] font-semibold rounded-md shadow-[0px_1px_0px_0px_#00000059]"
+									class="keyButton w-full h-full flex items-center justify-center bg-[#E4E4E4] text-[#262626] text-[1.2vw] font-semibold rounded-md shadow-[0px_1px_0px_0px_#00000059]"
 								>
 									<img src="@/assets/img/keypad/arrow_back.svg" alt="back arrow" />
 								</button>
 								<button
 									@click="inputDigit(0)"
 									v-touch-click
-									class="keyButton w-full h-full flex items-center justify-center bg-white text-[#262626] text-[1.15vw] font-semibold rounded-md hover:bg-gray-50 shadow-[0px_1px_0px_0px_#00000059]"
+									class="keyButton w-full h-full flex items-center justify-center bg-white text-[#262626] text-[1.5vw] font-semibold rounded-md hover:bg-gray-50 shadow-[0px_1px_0px_0px_#00000059]"
 								>
 									0
 								</button>
 								<button
 									@click="resetDigits"
 									v-touch-click
-									class="keyButton w-full h-full flex items-center justify-center bg-[#E4E4E4] text-[#262626] text-[1.15vw] font-semibold rounded-md shadow-[0px_1px_0px_0px_#00000059]"
+									class="keyButton w-full h-full flex items-center justify-center bg-[#E4E4E4] text-[#262626] text-[1.2vw] font-semibold rounded-md shadow-[0px_1px_0px_0px_#00000059]"
 								>
 									초기화
 								</button>
 							</div>
 						</div>
 						<div class="w-[10vw]">
-							<div class="flex flex-col space-y-2 h-full">
+							<div class="flex flex-col space-y-4 h-full">
 								<button
 									@click="deleteDigit"
 									v-touch-click
-									class="keyButton w-full h-[18vh] bg-[#E4E4E4] text-[#262626] font-semibold text-[1.15vw] rounded-md shadow-[0px_1px_0px_0px_#00000059] justify-center items-center flex"
+									class="keyButton w-full h-[18vh] bg-[#E4E4E4] text-[#262626] font-semibold text-[1.2vw] rounded-md shadow-[0px_1px_0px_0px_#00000059] justify-center items-center flex"
 								>
 									<img src="@/assets/img/keypad/arrow_back.svg" alt="back arrow" />
 								</button>
 								<button
 									@click="resetDigits"
 									v-touch-click
-									class="keyButton w-full h-[18vh] bg-[#434A66] text-white font-semibold text-[1.15vw] rounded-md shadow-[0px_1px_0px_0px_#00000059]"
+									class="keyButton w-full h-[18vh] bg-[#434A66] text-white font-semibold text-[1.2vw] rounded-md shadow-[0px_1px_0px_0px_#00000059]"
 								>
 									초기화
 								</button>
 								<button
-									@click="searchCarNumber"
+									@click="searchCarNumber(parseDigit(digits))"
 									v-touch-click
 									:disabled="digits.includes('') || digits.length !== 4"
-									class="keyButton w-full h-full bg-[#00B0B9] text-white font-semibold text-[1.15vw] rounded-md disabled:opacity-50 shadow-[0px_1px_0px_0px_#00000059]"
+									class="keyButton w-full h-full bg-[#00B0B9] text-white font-semibold text-[1.2vw] rounded-md disabled:opacity-50 shadow-[0px_1px_0px_0px_#00000059]"
 								>
 									검색
 								</button>
@@ -125,10 +125,13 @@
 		@cancel="handleCancel"
 	>
 		<template #content>
-			<p>차량 검색 결과가 없습니다.</p>
+			<p>{{ target }}</p>
 			<p>다시 검색해주세요.</p>
 		</template>
 	</Popup01>
+	<div v-if="listLoading">
+		<CarLoading />
+	</div>
 	<!-- <Popup02
 		v-model:visible="isPopupVisible"
 		title="팝업 제목"
@@ -147,6 +150,7 @@
 import { defineComponent, ref } from 'vue'
 import { useTitleEN } from '@/composables/useTitleEN'
 import { useRouter } from 'vue-router'
+import { useCustomerKioskStore } from '@/store/customerkioskStatus'
 
 export default defineComponent({
 	name: 'CustomerkioskSearchCarNumber',
@@ -154,12 +158,15 @@ export default defineComponent({
 		const { titleEN } = useTitleEN()
 		const router = useRouter()
 		const pageType = ref('1')
+		const customerKioskStore = useCustomerKioskStore()
 
 		const digits = ref(['', '', '', ''])
 		const numbers = ref([1, 2, 3, 4, 5, 6, 7, 8, 9, 0])
 
 		//공통팝업용
 		const isPopupVisible = ref(false)
+		const target = ref(null)
+		const listLoading = ref(false)
 
 		const inputDigit = digit => {
 			const index = digits.value.indexOf('')
@@ -175,18 +182,57 @@ export default defineComponent({
 			}
 		}
 
-		const searchCarNumber = () => {
-			if (digits.value.length === 4) {
-				//emit('search', digits.value.join(''))
-				//alert('차량번호가 존재하지않습니다.')
-				console.log('digits', digits.value.join(''))
-				isPopupVisible.value = true
+		const searchCarNumber = async digits => {
+			try {
+				listLoading.value = true
+				if (digits.length === 4) {
+					//emit('search', digits.value.join(''))
+					//alert('차량번호가 존재하지않습니다.')
+					console.log('digitsdigitsdigits', digits)
+					//isPopupVisible.value = true
 
-				resetDigits()
-			} else {
-				alert('차량번호 4자리를 입력하세요.')
-				resetDigits()
+					const params = {
+						keyWord: digits,
+					}
+
+					const res = await customerKioskStore.fetchCarList(params)
+					console.log('resresresresz', res)
+					if (res.length === 0) {
+						isPopupVisible.value = true
+						openPop('차량')
+					} else {
+						const query = params
+						router.push({
+							name: 'carsearchresults',
+							params: '1',
+							query,
+						})
+					}
+
+					resetDigits()
+				} else {
+					alert('차량번호 4자리를 입력하세요.')
+					resetDigits()
+				}
+			} catch (error) {
+			} finally {
+				listLoading.value = false
 			}
+		}
+
+		const parseDigit = digit => {
+			return digit.join('')
+		}
+
+		const openPop = val => {
+			if (val === '딜러') {
+				target.value = '딜러 검색 결과가 없습니다.'
+			} else if (val === '차량') {
+				target.value = '차량 검색 결과가 없습니다.'
+			} else {
+				target.value = '2글자 이상 입력해주세요.'
+			}
+			isPopupVisible.value = true
 		}
 
 		//공통팝업용
@@ -217,6 +263,10 @@ export default defineComponent({
 			searchCarNumber,
 			handleConfirm,
 			handleCancel,
+			parseDigit,
+			target,
+			openPop,
+			listLoading,
 		}
 	},
 })

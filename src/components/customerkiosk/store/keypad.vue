@@ -69,10 +69,24 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 export default defineComponent({
 	name: 'CustomerKioskStoreKeypad',
-	setup() {
+	props: {
+		checkSelect: {
+			type: String,
+			default: {},
+		},
+	},
+	setup(props, { emit }) {
+		// 단지선택 값 감지
+		watch(
+			() => props.checkSelect,
+			newVal => {
+				if (newVal) selectTab('hangul')
+			},
+		)
+
 		// 선택된 탭과 언어
 		const selectedTab = ref('hangul')
 		const selectedCharacter = ref('All') // 기본값을 'All'로 설정
@@ -117,6 +131,7 @@ export default defineComponent({
 		// 문자 선택
 		const selectCharacter = char => {
 			selectedCharacter.value = char
+			emit('selectedCharacter', selectedCharacter.value)
 		}
 
 		// 탭 클래스
@@ -128,9 +143,7 @@ export default defineComponent({
 
 		// 버튼 클래스
 		const buttonClasses = char => {
-			return selectedCharacter.value === char
-				? 'bg-[#0C7E60] text-white'
-				: 'hover:bg-[#0C7E60] hover:text-white'
+			return selectedCharacter.value === char ? 'bg-[#0C7E60] text-white' : 'hover:bg-[#0C7E60] hover:text-white'
 		}
 
 		return {

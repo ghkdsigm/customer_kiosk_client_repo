@@ -122,7 +122,7 @@
 <script>
 import { defineComponent, computed, ref, watch, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useMparkStore } from '@/store/mpark'
+import { useCustomerKioskStore } from '@/store/customerkioskStatus'
 import { useUtilities } from '@/utils/useUtilities'
 import { sideCarSearch } from '@/data/common.js'
 
@@ -145,7 +145,7 @@ export default defineComponent({
 		const selectedSecondIndex = ref(null)
 		const menuSelected = ref(false)
 		const newTitle = ref('')
-		const mparkStore = useMparkStore()
+		const customerKioskStore = useCustomerKioskStore()
 
 		const { formatStringWithNewlines } = useUtilities()
 
@@ -208,17 +208,23 @@ export default defineComponent({
 			}
 		})
 
+		watch(currentPath, (newPath) => {
+			if (newPath === '/customerkiosk/mpark') {
+				selectMenu(0)
+			}
+		})
+
 		const moveToIntro = () => {
 			router.push({ name: 'intro' })
 		}
 
 		//MPARK 단지 선택 상태관리
 		const updateDanjiTitle = val => {
-			mparkStore.setDanjiTitle(val)
+			customerKioskStore.setDanjiTitle(val)
 		}
 		//MPARK 층별 선택 타이틀 상태관리
 		const updateFloorTitle = val => {
-			mparkStore.setFloorTitle(val)
+			customerKioskStore.setFloorTitle(val)
 		}
 
 		return {

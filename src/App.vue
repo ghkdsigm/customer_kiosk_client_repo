@@ -17,24 +17,24 @@ export default {
 		const currentRoutes = useRoute()
 		const currentPath = computed(() => currentRoutes.path)
 
-		const preventZoom = (event) => {
-      // 확대/축소 방지
-      if (event.ctrlKey || event.type === 'gesturestart') {
-        event.preventDefault();
-      }
-    };
+		// const preventZoom = event => {
+		// 	// 확대/축소 방지
+		// 	if (event.ctrlKey || event.type === 'gesturestart') {
+		// 		event.preventDefault()
+		// 	}
+		// }
 
-    onMounted(() => {
-      // 마우스 휠 확대/축소 방지
-      document.addEventListener('wheel', preventZoom, { passive: false });
-      // 핀치 제스처 확대/축소 방지
-      document.addEventListener('gesturestart', preventZoom, { passive: false });
-    });
+		// onMounted(() => {
+		// 	// 마우스 휠 확대/축소 방지
+		// 	document.addEventListener('wheel', preventZoom, { passive: false })
+		// 	// 핀치 제스처 확대/축소 방지
+		// 	document.addEventListener('gesturestart', preventZoom, { passive: false })
+		// })
 
-    onUnmounted(() => {
-      document.removeEventListener('wheel', preventZoom);
-      document.removeEventListener('gesturestart', preventZoom);
-    });
+		// onUnmounted(() => {
+		// 	document.removeEventListener('wheel', preventZoom)
+		// 	document.removeEventListener('gesturestart', preventZoom)
+		// })
 		return {
 			currentPath,
 		}

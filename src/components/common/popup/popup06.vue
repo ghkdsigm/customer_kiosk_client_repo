@@ -1,7 +1,9 @@
 <template>
 	<div v-if="visible" class="fixed inset-0 flex items-center justify-center z-10">
 		<div class="absolute inset-0 bg-gray-900 opacity-50"></div>
-		<div class="bg-white flex rounded-lg shadow-lg p-0 w-[62.5vw] max-w-[62.5vw] h-[26.05vw] relative z-10">
+		<div
+			class="bg-white flex rounded-lg shadow-lg p-0 w-[62.5vw] max-w-[62.5vw] h-[26.05vw] relative z-10 bottom-[3vh]"
+		>
 			<!-- Popup Title -->
 			<!-- <h2 class="text-xl font-bold mb-4">{{ title }}</h2> -->
 			<!-- Popup Content -->
@@ -17,8 +19,15 @@
 					{{ confirmText }}
 				</button>
 			</div> -->
-			<div class="w-3/5 h-full bg-gray-200">
-				<img src="@/assets/img/store/storeTestImg.png" alt="스토어 테스트 이미지" class="w-full h-full block z-10" />
+			<div class="w-3/5 h-full bg-gray-200 flex justify-center items-center">
+				<img v-if="items.imageUrl" :src="items.imageUrl" :alt="items.companyName" />
+				<img
+					v-else
+					src="@/assets/img/emptyThumb.svg"
+					:alt="items.companyName"
+					class="w-full h-full block z-10"
+					style="width: 7vw"
+				/>
 			</div>
 			<div class="w-2/5 h-full">
 				<div class="-w-full h-full text-center flex flex-col items-center justify-center">
@@ -28,20 +37,20 @@
 						>
 							STORE
 						</p>
-						<h3 class="mb-[1.6vw] text-[1.6vw]">브이아이피 광택</h3>
+						<h3 class="mb-[1.6vw] text-[1.6vw]">{{ items?.companyName }}</h3>
 						<div class="w-full bg-[#F8F8F8] p-[2vw] rounded-sm">
 							<ul class="leading-[2.1vw]">
-								<li class="flex text-[0.9vw]">
+								<li class="flex text-[0.9vw]" v-if="items.floorName">
 									<span class="font-bold pr-[2vw]">매장위치</span>
-									<span class="font-normal">1F</span>
+									<span class="font-normal">{{ items.floorName }}</span>
 								</li>
-								<li class="flex text-[0.9vw]">
+								<li class="flex text-[0.9vw]" v-if="items.tel">
 									<span class="font-bold pr-[2vw]">전화번호</span>
-									<span class="font-normal">010-1234-1234</span>
+									<span class="font-normal">{{ items.tel }}</span>
 								</li>
 							</ul>
 						</div>
-						<a
+						<!-- <a
 							href="#"
 							class="mt-[1.6vw] block w-[11.5vw] h-[2.65vw] rounded bg-[#00B0B9] px-3 py-2 font-semibold text-[0.9vw] text-white shadow-sm flex justify-center items-center"
 							><img
@@ -49,7 +58,7 @@
 								alt="위치안내 아이콘 이미지"
 								class="w-[1.4vw] h-[1.4vw] pr-[0.5vw] block z-10"
 							/>위치안내</a
-						>
+						> -->
 					</div>
 				</div>
 			</div>
@@ -57,7 +66,7 @@
 		<!-- Close button -->
 		<button
 			@click="close"
-			class="absolute bg-white flex items-center z-50 top-[42vw] justify-center text-gray-400 hover:text-gray-600 w-[2.7vw] h-[2.7vw] rounded-full"
+			class="absolute bg-white flex items-center z-50 top-[40vw] justify-center text-gray-400 hover:text-gray-600 w-[2.7vw] h-[2.7vw] rounded-full"
 		>
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -95,6 +104,10 @@ export default defineComponent({
 			type: Boolean,
 			default: false,
 		},
+		items: {
+			type: Object,
+			default: {},
+		},
 	},
 	emits: ['confirm', 'cancel', 'update:visible'],
 	setup(props, { emit }) {
@@ -127,5 +140,4 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -12,12 +12,9 @@
 		:modules="modules"
 		class="mySwiper2"
 	>
-		<swiper-slide><img src="@/assets/img/search/car01.png" /></swiper-slide>
-		<swiper-slide><img src="@/assets/img/search/noImg.png" /></swiper-slide>
-		<swiper-slide><img src="@/assets/img/search/noImg.png" /></swiper-slide>
-		<swiper-slide><img src="@/assets/img/search/noImg.png" /></swiper-slide>
-		<swiper-slide><img src="@/assets/img/search/noImg.png" /></swiper-slide>
-		<swiper-slide><img src="@/assets/img/search/noImg.png" /></swiper-slide>
+		<swiper-slide v-for="(item, idx) in items" :key="idx"
+			><img :src="replaceUrlSegment(item, 'mpark_test', 'mpark')"
+		/></swiper-slide>
 		<!-- 추가 이미지들 -->
 	</swiper>
 
@@ -30,14 +27,12 @@
 		:freeMode="true"
 		:watchSlidesProgress="true"
 		:modules="modules"
+		:centeredSlides="false"
 		class="mySwiper"
 	>
-		<swiper-slide><img src="@/assets/img/search/car01.png" /></swiper-slide>
-		<swiper-slide><img src="@/assets/img/search/noImg.png" /></swiper-slide>
-		<swiper-slide><img src="@/assets/img/search/noImg.png" /></swiper-slide>
-		<swiper-slide><img src="@/assets/img/search/noImg.png" /></swiper-slide>
-		<swiper-slide><img src="@/assets/img/search/noImg.png" /></swiper-slide>
-		<swiper-slide><img src="@/assets/img/search/noImg.png" /></swiper-slide>
+		<swiper-slide v-for="(item, idx) in items" :key="idx"
+			><img :src="replaceUrlSegment(item, 'mpark_test', 'mpark')"
+		/></swiper-slide>
 		<!-- 추가 이미지들 -->
 	</swiper>
 </template>
@@ -62,7 +57,8 @@ export default {
 		SwiperSlide,
 	},
 	name: 'Slider02',
-	setup() {
+	props: { items: { type: Array, default: [] } },
+	setup(props) {
 		const thumbsSwiper = ref(null)
 
 		const setThumbsSwiper = swiper => {
@@ -70,10 +66,15 @@ export default {
 			thumbsSwiper.value = swiper
 		}
 
+		const replaceUrlSegment = (url, oldSegment, newSegment) => {
+			return url.replace(oldSegment, newSegment)
+		}
+
 		return {
 			thumbsSwiper,
 			setThumbsSwiper,
 			modules: [FreeMode, Navigation, Thumbs],
+			replaceUrlSegment,
 		}
 	},
 }

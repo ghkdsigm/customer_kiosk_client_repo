@@ -2,60 +2,78 @@
 	<div>
 		<div class="mb-[3vh] tit_bar">
 			<h1 class="tit">{{ titleEN }}</h1>
-			<button type="button" class="btn_pre" @click="router.go(-1)">
+			<button type="button" class="btn_pre" @click="router.push('/customerkiosk/searchcar')">
 				<img src="/src/assets/img/icn/chevron_right.svg" aria-hidden />
 				이전단계
 			</button>
 		</div>
 
 		<div class="inner">
-			<div class="left">
-				<div class="type">
-					<span>국산차</span>
-					<ul>
-						<li class="action">현대</li>
-						<li>제네시스</li>
-						<li>기아</li>
-						<li>쉐보레</li>
-						<li>르노삼성</li>
-						<li>쌍용</li>
-					</ul>
+			<!-- 브랜드/국가 -->
+			<div class="left scroll">
+				<div v-if="!brandLoading">
+					<CarLoading />
 				</div>
-				<div class="type">
-					<span>수입차</span>
-					<ul>
-						<li>BMW</li>
-						<li>벤츠</li>
-						<li>아우디</li>
-						<li>폭스바겐</li>
-						<li>포드</li>
-						<li>크리아슬러</li>
-						<li>렉서스</li>
-						<li>혼다</li>
-						<li>푸조</li>
-						<li>테슬라</li>
-						<li>기타</li>
-					</ul>
+				<div
+					v-else
+					v-for="(category, categoryKey) in country"
+					:key="categoryKey"
+					class="mb-[2vh] flex flex-col justify-center items-center"
+				>
+					<h2 class="text-[1vw] font-bold mb-[1vh] flex justify-center border rounded-full max-w-fit px-[1vw]">
+						{{ categoryKey === 'domestic' ? '국산' : '수입' }}차
+					</h2>
+
+					<div v-for="(group, groupKey) in category" :key="groupKey" class="w-full">
+						<h3
+							:class="{
+								'text-[0.8vw] font-semibold mb-[0.2vh] flex justify-center rounded-full': groupKey !== 'Top',
+								'cursor-pointer': groupKey === 'Etc',
+							}"
+							@click="toggleGroup(categoryKey, groupKey)"
+						>
+							{{ groupKey === 'Top' ? '' : '기타' }}
+						</h3>
+
+						<ul v-show="groupKey === 'Top' || (groupKey === 'Etc' && isOpen[categoryKey])" class="">
+							<li
+								v-for="car in group"
+								:key="car.carCode"
+								class="flex justify-center items-center py-[0.5vh] px-[0.1vw]"
+								:class="{
+									'bg-[#00969D] text-red-500': selectedCarBrand === car.carCode,
+									'bg-[#00969D]': groupKey === 'Etc' && selectedCarBrand !== car.carCode,
+								}"
+								@click="selectBrand(car)"
+							>
+								<span class="text-white text-[0.85vw]">{{ car.carCodeName }}</span>
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 
+			<!-- 스탭 -->
 			<div class="right">
 				<div class="step">
 					<div class="item">
 						<p class="tit">STEP 01 모델</p>
-						<ul>
-							<li>item 01</li>
-							<li>item 02</li>
-							<li>item 03</li>
-							<li>item 04</li>
-							<li>item 05</li>
-							<li>item 06</li>
-							<li>item 07</li>
-							<li>item 08</li>
-							<li>item 09</li>
-							<li>item 10</li>
-						</ul>
-						<!-- <div class="no_result">제조사를 선택해주세요</div> -->
+						<div v-if="isLoading.model">
+							<CarLoading />
+						</div>
+						<div class="stepScroll scroll" v-else-if="modelData?.length !== 0 && !isLoading.model">
+							<ul v-for="(item, idx) in modelData" :key="idx" class="py-[2px]">
+								<li
+									@click="selectModel(item.carCode)"
+									:class="{
+										selected: selectedModel === item.carCode,
+									}"
+								>
+									{{ item.carCodeName }}
+								</li>
+							</ul>
+						</div>
+						<div v-else class="no_result">대표차명을 선택해주세요</div>
 						<div class="btn_bar">
 							<button><img src="/src/assets/img/icn/chevron_top.svg" aria-hidden /></button>
 							<button><img src="/src/assets/img/icn/chevron_bottom.svg" aria-hidden /></button>
@@ -64,7 +82,22 @@
 
 					<div class="item">
 						<p class="tit">STEP 02 세부모델</p>
-						<div class="no_result">대표차명을 선택해주세요</div>
+						<div v-if="isLoading.modelDetail">
+							<CarLoading />
+						</div>
+						<div class="stepScroll scroll" v-else-if="modelDetailData !== null && !isLoading.model">
+							<ul v-for="(item, idx) in modelDetailData" :key="idx" class="py-[2px]">
+								<li
+									@click="selectModelDetail(item.carCode)"
+									:class="{
+										selected: selectedModelDetail === item.carCode,
+									}"
+								>
+									{{ item.carCodeName }}
+								</li>
+							</ul>
+						</div>
+						<div v-else class="no_result">세부모델명을 선택해주세요</div>
 						<div class="btn_bar">
 							<button><img src="/src/assets/img/icn/chevron_top.svg" aria-hidden /></button>
 							<button><img src="/src/assets/img/icn/chevron_bottom.svg" aria-hidden /></button>
@@ -73,7 +106,22 @@
 
 					<div class="item">
 						<p class="tit">STEP 03 등급</p>
-						<div class="no_result">모델명을 선택해주세요</div>
+						<div v-if="isLoading.grade">
+							<CarLoading />
+						</div>
+						<div class="stepScroll scroll" v-else-if="gradeData !== null && !isLoading.modelDetail">
+							<ul v-for="(item, idx) in gradeData" :key="idx" class="py-[2px]">
+								<li
+									@click="selectGrade(item.carCode)"
+									:class="{
+										selected: selectedGrade === item.carCode,
+									}"
+								>
+									{{ item.carCodeName }}
+								</li>
+							</ul>
+						</div>
+						<div v-else class="no_result">등급을 선택해주세요</div>
 						<div class="btn_bar">
 							<button><img src="/src/assets/img/icn/chevron_top.svg" aria-hidden /></button>
 							<button><img src="/src/assets/img/icn/chevron_bottom.svg" aria-hidden /></button>
@@ -84,207 +132,327 @@
 				<div class="option">
 					<div class="item">
 						<p class="tit">변속</p>
-						<ul>
-							<li class="action">전체</li>
-							<li>자동</li>
-							<li>수동</li>
+						<ul class="py-[2px]">
+							<li
+								class="text-[#777]"
+								:class="{
+									base: !selectedGear,
+									'bg-[#f8f8f8] text-[#00969d] font-bold': selectedGear === 'all',
+								}"
+								@click="selectGear('all')"
+							>
+								전체
+							</li>
+							<li
+								v-for="(item, idx) in gearData"
+								:key="idx"
+								@click="selectGear(item.code)"
+								class="text-[#777]"
+								:class="{
+									selected: selectedGear === item.code,
+								}"
+							>
+								{{ item.codeName }}
+							</li>
 						</ul>
 					</div>
 					<div class="item">
 						<p class="tit">연료</p>
-						<ul>
-							<li>전체</li>
-							<li>휘발유</li>
-							<li>경유</li>
-							<li>LPG</li>
-							<li>LPG 겸용</li>
-							<li>휘발유 + 전기</li>
-							<li>경유 + 전기</li>
-							<li>LPG + 전기</li>
-							<li>CNG 겸용</li>
-							<li>전기(EV)</li>
-							<li>기타</li>
+						<ul class="py-[2px]">
+							<li
+								class="text-[#777]"
+								:class="{
+									base: !selectedFuel,
+									'bg-[#f8f8f8] text-[#00969d] font-bold': selectedFuel === 'all',
+								}"
+								@click="selectFuel('all')"
+							>
+								전체
+							</li>
+							<li
+								v-for="(item, idx) in fuelData"
+								:key="idx"
+								@click="selectFuel(item.code)"
+								class="text-[#777]"
+								:class="{
+									selected: selectedFuel === item.code,
+								}"
+							>
+								{{ item.codeName }}
+							</li>
 						</ul>
 					</div>
 					<div class="btn_bar">
-						<button class="btn_reset">초기화</button>
-						<button class="btn_search" @click="searchCars(pageType, 123, 1272, 3507, null, '004001', '005001')">
-							검색
-						</button>
+						<button class="btn_reset" @click="resetInfo">초기화</button>
+						<button class="btn_search" @click="searchCars()">검색</button>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+
+	<Popup01
+		v-model:visible="isPopupVisible"
+		title="재검색"
+		confirmText="다시 검색하기"
+		ico="replay.svg"
+		@confirm="handleConfirm"
+		@cancel="handleCancel"
+	>
+		<template #content>
+			<p>{{ target }}</p>
+			<p v-if="selectedCarBrand">다시 검색해주세요.</p>
+		</template>
+	</Popup01>
+	<div v-if="listLoading">
+		<CarLoading />
+	</div>
 </template>
 
 <script>
-import { defineComponent, ref, computed } from 'vue'
+import { defineComponent, ref, computed, onMounted } from 'vue'
 import { useTitleEN } from '@/composables/useTitleEN'
 import { useRouter } from 'vue-router'
+import { useCustomerKioskStore } from '@/store/customerkioskStatus'
 
 export default defineComponent({
 	name: 'CustomerkioskSearchCarManufacturer',
 	setup() {
 		const { titleEN } = useTitleEN()
+		const customerKioskStore = useCustomerKioskStore()
 		const router = useRouter()
-		const pageType = ref('0')
+		const pageType = ref('1')
+
+		//공통팝업용
+		const isPopupVisible = ref(false)
+		const target = ref(null)
 
 		// 각 단계별 데이터
-		const brands = ref([
-			{ id: 1, name: '현대' },
-			{ id: 2, name: '아우디' },
-			{ id: 3, name: '벤츠' }
-		]);
+		const country = ref(null)
+		const maker = ref(null)
+		const gear = ref(null)
+		const fuel = ref(null)
+		const makerCode = computed(() => customerKioskStore.makerCode)
+		const modelCode = computed(() => customerKioskStore.modelCode)
+		const modelDetailCode = computed(() => customerKioskStore.modelDetailCode)
+		const gradeCode = computed(() => customerKioskStore.gradeCode)
 
-		const models = ref([
-			{ id: 1, brandId: 1, name: '소나타' },
-			{ id: 2, brandId: 1, name: '그랜저' },
-			{ id: 3, brandId: 2, name: 'Q5' },
-			{ id: 4, brandId: 2, name: 'A6' },
-			{ id: 5, brandId: 3, name: 'C-Class' },
-			{ id: 6, brandId: 3, name: 'E-Class' }
-		]);
+		const modelData = computed(() => customerKioskStore.models.model)
+		const modelDetailData = computed(() => customerKioskStore.models.modelDetail)
+		const gradeData = computed(() => customerKioskStore.models.grade)
+		const gearData = ref(null)
+		const fuelData = ref(null)
 
-		const detailModels = ref([
-			{ id: 1, modelId: 1, year: '2021' },
-			{ id: 2, modelId: 1, year: '2022' },
-			{ id: 3, modelId: 2, year: '2020' },
-			{ id: 4, modelId: 2, year: '2021' },
-			{ id: 5, modelId: 3, year: '2019' },
-			{ id: 6, modelId: 3, year: '2020' }
-		]);
+		const selectedCarBrand = ref(null)
+		const selectedModel = ref(null)
+		const selectedModelDetail = ref(null)
+		const selectedGrade = ref(null)
+		const selectedGear = ref(null)
+		const selectedFuel = ref(null)
+		const listLoading = ref(false)
 
-		const grades = ref([
-			{ id: 1, detailModelId: 1, name: '2.4 등급' },
-			{ id: 2, detailModelId: 2, name: '3.3 등급' },
-			{ id: 3, detailModelId: 3, name: '1.6 등급' },
-			{ id: 4, detailModelId: 4, name: '2.0 등급' }
-		]);
+		// 로딩 상태
+		const isLoading = computed(() => customerKioskStore.isLoading)
+		const brandLoading = ref(false)
 
-		const transmissions = ref([
-			{ id: 1, type: '수동' },
-			{ id: 2, type: '자동' }
-		]);
+		onMounted(async () => {
+			resetInfo()
+			try {
+				const params = {
+					carCodeType: 'maker',
+				}
+				const res = await customerKioskStore.fetchCarCodeList(params)
+				const gear = await customerKioskStore.fetchCommonCodeList('004')
+				const fuel = await customerKioskStore.fetchCommonCodeList('005')
+				if (res.length !== 0) {
+					brandLoading.value = true
+					country.value = res
+				}
+				gearData.value = gear
+				fuelData.value = fuel
+				return {
+					country,
+					gearData,
+					fuelData,
+				}
+			} catch (error) {
+				console.error('error', error)
+			}
+		})
 
-		const fuels = ref([
-			{ id: 1, type: '휘발유' },
-			{ id: 2, type: '경유' },
-			{ id: 3, type: 'LPG' }
-		]);
+		// 선택 변경
+		const selectBrand = makerCode => {
+			selectedCarBrand.value = makerCode.carCode
 
-		// 선택된 값
-		const selectedBrand = ref(null);
-		const selectedModel = ref(null);
-		const selectedDetailModel = ref(null);
-		const selectedGrade = ref(null);
-		const selectedTransmission = ref(null);
-		const selectedFuel = ref(null);
-
-		// 필터링된 리스트 계산
-		const filteredModels = computed(() => {
-		return models.value.filter(model => model.brandId === selectedBrand.value);
-		});
-
-		const filteredDetailModels = computed(() => {
-		return detailModels.value.filter(detail => detail.modelId === selectedModel.value);
-		});
-
-		const filteredGrades = computed(() => {
-		return grades.value.filter(grade => grade.detailModelId === selectedDetailModel.value);
-		});
-
-		// 선택 변경 핸들러
-		const selectBrand = (id) => {
-		selectedBrand.value = id;
-		resetSelections('brand');
-		};
-
-		const selectModel = (id) => {
-		selectedModel.value = id;
-		resetSelections('model');
-		};
-
-		const selectDetailModel = (id) => {
-		selectedDetailModel.value = id;
-		resetSelections('detailModel');
-		};
-
-		const selectGrade = (id) => {
-		selectedGrade.value = id;
-		resetSelections('grade');
-		};
-
-		const selectTransmission = (id) => {
-		selectedTransmission.value = id;
-		resetSelections('transmission');
-		};
-
-		const selectFuel = (id) => {
-		selectedFuel.value = id;
-		};
-
-		const resetSelections = (fromLevel) => {
-		if (fromLevel === 'brand') {
-			selectedModel.value = null;
-			selectedDetailModel.value = null;
-			selectedGrade.value = null;
-			selectedTransmission.value = null;
-			selectedFuel.value = null;
-		} else if (fromLevel === 'model') {
-			selectedDetailModel.value = null;
-			selectedGrade.value = null;
-			selectedTransmission.value = null;
-			selectedFuel.value = null;
-		} else if (fromLevel === 'detailModel') {
-			selectedGrade.value = null;
-			selectedTransmission.value = null;
-			selectedFuel.value = null;
-		} else if (fromLevel === 'grade') {
-			selectedTransmission.value = null;
-			selectedFuel.value = null;
-		} else if (fromLevel === 'transmission') {
-			selectedFuel.value = null;
+			maker.value = makerCode.carCode
+			customerKioskStore.updateCarCode('model', makerCode.carCode)
 		}
-		};
 
-		const searchCars = (type, maker, model, modelDetail, grade, gear, fuel) => {
-			const query = {
-				maker,
-			}
-			if (model) {
-				query.model = model
-			}
-			if (modelDetail) {
-				query.modelDetail = modelDetail
-			}
-			if (gear) {
-				query.gear = gear
-			}
-			if (fuel) {
-				query.fuel = fuel
-			}
-			if (grade) {
-				query.grade = grade
-			}
-
-			router.push({
-				name: 'carsearchresults',
-				params: type,
-				query,
-			})
+		const selectModel = modelCode => {
+			selectedModel.value = modelCode
+			customerKioskStore.updateCarCode('modelDetail', modelCode)
 		}
+
+		const selectModelDetail = modelDetailCode => {
+			selectedModelDetail.value = modelDetailCode
+			customerKioskStore.updateCarCode('grade', modelDetailCode)
+		}
+
+		const selectGrade = lastopt => {
+			selectedGrade.value = lastopt
+			customerKioskStore.updateCarCode('lastopt', lastopt)
+		}
+
+		const selectGear = gearCode => {
+			selectedGear.value = gearCode
+			if (gearCode !== 'all') {
+				gear.value = gearCode
+			} else {
+				gear.value = ''
+			}
+		}
+
+		const selectFuel = fuelCode => {
+			selectedFuel.value = fuelCode
+			if (fuelCode !== 'all') {
+				fuel.value = fuelCode
+			} else {
+				fuel.value = ''
+			}
+		}
+
+		const searchCars = async () => {
+			if (!selectedCarBrand.value) {
+				isPopupVisible.value = true
+				openPop('브랜드')
+				return
+			}
+			try {
+				listLoading.value = true
+				const query = {}
+
+				if (maker.value) {
+					query.makerCode = maker.value
+				}
+				if (modelCode.value) {
+					query.modelCode = modelCode.value
+				}
+				if (modelDetailCode.value) {
+					query.modelDetailCode = modelDetailCode.value
+				}
+				if (gear.value) {
+					query.gearCode = gear.value
+				}
+				if (fuel.value) {
+					query.fuelCode = fuel.value
+				}
+				if (gradeCode.value) {
+					query.gradeCode = gradeCode.value
+				}
+
+				console.log('queryqueryqueryqueryquery', query)
+
+				const res = await customerKioskStore.fetchCarList(query)
+				if (res.length === 0) {
+					isPopupVisible.value = true
+					openPop('차량')
+				} else {
+					router.push({
+						name: 'carsearchresults',
+						params: '0',
+					})
+				}
+			} catch (error) {
+			} finally {
+				listLoading.value = false
+			}
+		}
+
+		const openPop = val => {
+			if (val === '딜러') {
+				target.value = '딜러 검색 결과가 없습니다.'
+			} else if (val === '브랜드') {
+				target.value = '브랜드를 선택해주세요'
+			} else if (val === '차량') {
+				target.value = '차량 검색 결과가 없습니다.'
+			} else {
+				target.value = '2글자 이상 입력해주세요.'
+			}
+			isPopupVisible.value = true
+		}
+
+		const isOpen = ref({
+			domestic: false,
+			foreign: false,
+		})
+
+		const toggleGroup = (categoryKey, groupKey) => {
+			console.log('categoryKey', categoryKey)
+			console.log('groupKey', groupKey)
+			if (groupKey === 'Etc') {
+				isOpen.value[categoryKey] = !isOpen.value[categoryKey]
+			}
+		}
+
+		const resetInfo = () => {
+			customerKioskStore.updateCarCode(null)
+		}
+
+		//공통팝업용
+		const handleConfirm = () => {
+			console.log('확인 버튼이 클릭되었습니다.')
+			isPopupVisible.value = false // 팝업 닫기
+		}
+		//공통팝업용
+		const handleCancel = () => {
+			console.log('취소 버튼이 클릭되었습니다.')
+			isPopupVisible.value = false // 팝업 닫기
+		}
+
 		return {
 			titleEN,
 			router,
 			pageType,
+			isPopupVisible,
+			target,
+			handleConfirm,
+			handleCancel,
+			openPop,
 			searchCars,
-			brands,
-			models,
-			detailModels,
-			grades,
-			transmissions,
-			fuels
+			selectedCarBrand,
+			selectedModel,
+			selectedModelDetail,
+			selectedGrade,
+			selectedGear,
+			selectedFuel,
+			//grades,
+			//transmissions,
+			//fuels,
+			country,
+			maker,
+			gear,
+			fuel,
+			gearData,
+			fuelData,
+			isOpen,
+			toggleGroup,
+			selectBrand,
+			selectModel,
+			selectModelDetail,
+			selectGrade,
+			modelData,
+			modelDetailData,
+			gradeData,
+			isLoading,
+			resetInfo,
+			selectGear,
+			selectFuel,
+			makerCode,
+			modelCode,
+			modelDetailCode,
+			gradeCode,
+			listLoading,
+			brandLoading,
 		}
 	},
 })
@@ -310,7 +478,11 @@ export default defineComponent({
 		}
 	}
 }
-
+.base {
+	color: #00b0b9;
+	background-color: #f8f8f8;
+	font-weight: bold;
+}
 .inner {
 	display: flex;
 	width: 100%;
@@ -354,6 +526,7 @@ export default defineComponent({
 			}
 		}
 	}
+
 	.right {
 		display: flex;
 		width: calc(100% - 12vw);
@@ -380,9 +553,7 @@ export default defineComponent({
 			}
 			li {
 				padding: 0 1vw;
-				color: #777;
 				font-size: 1.4vh;
-				font-weight: 500;
 				line-height: 2.3;
 				cursor: pointer;
 				&.action,
@@ -428,10 +599,10 @@ export default defineComponent({
 			width: 30%;
 			.item {
 				&:first-child {
-					height: 20vh;
+					height: max-content;
 				}
 				&:nth-child(2) {
-					height: 48vh !important;
+					height: max-content !important;
 				}
 			}
 			.btn_bar {
@@ -470,4 +641,50 @@ export default defineComponent({
 		color: #00b0b9;
 	}
 }
+
+.selected {
+	color: #00b0b9 !important;
+	background-color: #f8f8f8;
+	font-weight: bold !important;
+}
+
+.stepScroll {
+	height: calc(100% - 7vh);
+}
+
+/* 스크롤 숨기기 */
+.scroll {
+	overflow-y: scroll; /* 세로 스크롤 활성화 */
+	-ms-overflow-style: none; /* IE와 Edge에서 스크롤바 숨김 */
+	scrollbar-width: none; /* Firefox에서 스크롤바 숨김 */
+}
+
+.scroll::-webkit-scrollbar {
+	display: none; /* Chrome, Safari, Opera에서 스크롤바 숨김 */
+}
+
+/* 웹킷 기반 브라우저용 스크롤바 스타일 */
+// 아래 주석 풀면 스크롤바 적용
+// .scroll::-webkit-scrollbar {
+//   width: 10px; /* 스크롤바 너비 */
+// }
+
+// .scroll::-webkit-scrollbar-track {
+//   background: #f0f0f0; /* 스크롤바 배경 */
+//   border-radius: 10px; /* 모서리 둥글게 */
+// }
+
+// .scroll::-webkit-scrollbar-thumb {
+//   background: #00969D; /* 스크롤바 색상 */
+//   border-radius: 10px; /* 모서리 둥글게 */
+// }
+
+// .scroll::-webkit-scrollbar-thumb:hover {
+//   background: #007B8D; /* 마우스 오버 시 색상 변경 */
+// }
+// /* Firefox 스크롤바 스타일 */
+// .scroll {
+//   scrollbar-width: thin; /* 얇은 스크롤바 */
+//   scrollbar-color: #00969D #f0f0f0; /* 스크롤바 색상 및 배경 */
+// }
 </style>

@@ -7,23 +7,23 @@
 
 <script>
 import { defineComponent, ref, onMounted, computed } from 'vue'
-import { useMparkStore } from '@/store/mpark'
-import { storeToRefs } from 'pinia';
+import { useCustomerKioskStore } from '@/store/customerkioskStatus'
+import { storeToRefs } from 'pinia'
 
 export default defineComponent({
 	name: 'CustomerKioskNews',
 	setup() {
-		const mparkStore = useMparkStore()
-		const { filteredNews } = storeToRefs(mparkStore);
-		const items = computed(() => mparkStore.news.data)	
+		const customerKioskStore = useCustomerKioskStore()
+		const { filteredNews } = storeToRefs(useCustomerKioskStore)
+		const items = computed(() => customerKioskStore.news.data)
 
-		onMounted(() => {
-			mparkStore.fetchNews();
+		onMounted(async () => {
+			await customerKioskStore.fetchNews()
 		})
 
 		return {
 			items,
-			filteredNews
+			filteredNews,
 		}
 	},
 })

@@ -1,6 +1,6 @@
 <template>
 	<div class="flex flex-col items-center p-4 bg-gray-100 rounded-lg shadow-lg">
-		<div class="flex space-x-2 mb-4">
+		<div class="flex space-x-3 mb-4">
 			<div
 				v-for="(digit, index) in digits"
 				:key="index"
